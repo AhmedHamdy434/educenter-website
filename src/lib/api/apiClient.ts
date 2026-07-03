@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestOptions, ApiResponse } from "@/types";
-import { cookies } from "next/headers";
 import { buildParams } from "./buildParams";
-// import { forwardResponseCookies } from "./forwardResponseCookies";
 
 export const serverApiClient = async <T>({
   url,
@@ -12,9 +10,23 @@ export const serverApiClient = async <T>({
   headers,
   cache = "no-store",
 }: RequestOptions): Promise<ApiResponse<T>> => {
-  const cookieStore = await cookies();
+  let token: string | undefined;
 
-  const token = cookieStore.get("token");
+  if (typeof window === "undefined") {
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      token = cookieStore.get("token")?.value;
+    } catch (e) {
+      console.error("Error accessing server cookies:", e);
+    }
+  } else {
+    // Client-side: read token from cookies
+    token = document.cookie
+      .split("; ")
+      .find((row) => row.trim().startsWith("token="))
+      ?.split("=")[1];
+  }
 
   const query = buildParams(params);
   const queryString = query ? `?${query}` : "";
@@ -22,7 +34,7 @@ export const serverApiClient = async <T>({
 
   const headersInit: Record<string, string> = {
     ...(token && {
-      Authorization: `Bearer ${token.value}`,
+      Authorization: `Bearer ${token}`,
     }),
     ...(headers as Record<string, string>),
   };
@@ -31,10 +43,7 @@ export const serverApiClient = async <T>({
     headersInit["Content-Type"] = "application/json";
   }
 
-  const baseUrl =
-    url.startsWith("http://") || url.startsWith("https://")
-      ? ""
-      : process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
   try {
     const res = await fetch(`${baseUrl}${url}${queryString}`, {
@@ -49,17 +58,20 @@ export const serverApiClient = async <T>({
     });
     const data = await res.json();
 
-    //   await forwardResponseCookies(res);
     if (!res.ok) {
       console.error(new Error(data.message || "Something went wrong"));
     }
+
     return data;
   } catch (error) {
     console.error("Error during API request:", error);
+    const errorMessage =
+      "فشل الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.";
+
+
     return {
       success: false,
-      message:
-        "فشل الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.",
+      message: errorMessage,
       data: null as any,
     };
   }

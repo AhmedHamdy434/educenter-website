@@ -1,25 +1,24 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GraduationCap, Eye, EyeOff, Loader2, AlertTriangle, ArrowRight } from "lucide-react";
+import { GraduationCap, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/common/form-input";
 import { loginSchema, type LoginFormValues } from "../schemas/login-schema";
 import { loginAction } from "../actions/login";
-import { FadeIn, ScaleIn } from "@/components/common/motion-wrapper";
+import { FadeIn } from "@/components/common/motion-wrapper";
+import { handleResponseToast } from "@/lib/api/handleResponseToast";
 
 export function LoginForm() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
-    setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
@@ -32,23 +31,12 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginFormValues) => {
     clearErrors("root");
-    try {
-      const result = await loginAction(data);
 
-      if (result.success) {
-        // Redirect to homepage/dashboard and refresh the router context to pick up the token cookie
-        router.push("/");
-        router.refresh();
-      } else {
-        setError("root", {
-          message: result.message || "فشل تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مجدداً.",
-        });
-      }
-    } catch (error) {
-      console.error("Login submission error:", error);
-      setError("root", {
-        message: "عذراً، حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة لاحقاً.",
-      });
+    const result = await loginAction(data);
+
+    handleResponseToast(result);
+    if (result.success) {
+      router.push("/");
     }
   };
 
@@ -66,22 +54,20 @@ export function LoginForm() {
               <div className="flex size-10 items-center justify-center rounded-xl bg-[#F0F7F4] text-[#1E4632]">
                 <GraduationCap className="size-6 stroke-[2.5]" />
               </div>
-              <span className="font-extrabold text-xl tracking-tight">EduCenter</span>
+              <span className="font-extrabold text-xl tracking-tight">
+                EduCenter
+              </span>
             </Link>
-            <h2 className="text-2xl font-bold text-[#1e4632] tracking-tight">تسجيل الدخول للمنصة</h2>
-            <p className="text-slate-500 text-sm">أدخل بريدك الإلكتروني أو رقم الهاتف للمتابعة</p>
+            <h2 className="text-2xl font-bold text-[#1e4632] tracking-tight">
+              تسجيل الدخول للمنصة
+            </h2>
+            <p className="text-slate-500 text-sm">
+              أدخل بريدك الإلكتروني أو رقم الهاتف للمتابعة
+            </p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Global Errors Banner */}
-            {errors.root && (
-              <ScaleIn className="flex items-center gap-3 p-4 bg-red-50 border border-red-100 text-red-800 rounded-2xl text-sm">
-                <AlertTriangle className="size-5 shrink-0 text-red-600" />
-                <span>{errors.root.message}</span>
-              </ScaleIn>
-            )}
-
             <div className="space-y-4">
               {/* Identifier Input */}
               <FormInput
@@ -98,23 +84,27 @@ export function LoginForm() {
               {/* Password Input with Visibility Toggle */}
               <div className="relative">
                 <FormInput
-                  type={showPassword ? "text" : "password"}
+                  type="password"
                   id="password"
                   label="كلمة المرور"
                   placeholder="••••••••"
-                  className="text-left dir-ltr pl-12"
+                  // className="text-left dir-ltr pl-12"
                   error={errors.password?.message}
                   disabled={isSubmitting}
                   {...register("password")}
                 />
-                <button
+                {/* <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isSubmitting}
                   className="absolute left-4 top-[38px] text-slate-400 hover:text-slate-600 transition-colors p-1"
                 >
-                  {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-                </button>
+                  {showPassword ? (
+                    <EyeOff className="size-5" />
+                  ) : (
+                    <Eye className="size-5" />
+                  )}
+                </button> */}
               </div>
             </div>
 

@@ -18,7 +18,7 @@ export async function loginAction(
   });
 
   if (result && result.success) {
-    const token = result.data?.token;
+    const token = result.data?.accessToken;
     if (token) {
       const cookieStore = await cookies();
       cookieStore.set("token", token, {

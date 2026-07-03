@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 
 export async function Pricing() {
   const data = await getSubscriptionPlans();
-  console.log("aaaa", data);
   const plans = data.data || [];
 
   return (
