@@ -61,7 +61,7 @@ export const serverApiClient = async <T>({
     if (!res.ok) {
       console.error(new Error(data.message || "Something went wrong"));
     }
-
+console.log("getttt",url,data)
     return data;
   } catch (error) {
     console.error("Error during API request:", error);

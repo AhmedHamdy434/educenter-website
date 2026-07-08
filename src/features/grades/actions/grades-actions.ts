@@ -2,14 +2,11 @@
 
 import { serverApiClient } from "@/lib/api/apiClient";
 import { type Grade, type CreateGradeDTO, type UpdateGradeDTO } from "../types";
-import { type ApiResponse } from "@/types";
+import { type ApiResponse, QueryParams } from "@/types";
 
-export async function getGrades(params?: {
-  page?: number;
-  limit?: number;
-  search?: string;
-  active?: boolean;
-}): Promise<ApiResponse<Grade[]>> {
+export async function getGrades(
+  params: QueryParams,
+): Promise<ApiResponse<Grade[]>> {
   return serverApiClient<Grade[]>({
     url: "/grades",
     method: "GET",
@@ -29,6 +26,7 @@ export async function getGradeById(id: string): Promise<ApiResponse<Grade>> {
 export async function createGradeAction(
   data: CreateGradeDTO,
 ): Promise<ApiResponse<Grade>> {
+  console.log("dataaaaaaa", data);
   return serverApiClient<Grade>({
     url: "/grades",
     method: "POST",

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -29,6 +29,44 @@ export function SharedPagination({
   onLimitChange,
 }: SharedPaginationProps) {
   if (total === 0) return null;
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+
+      let start = Math.max(2, page - 1);
+      let end = Math.min(totalPages - 1, page + 1);
+
+      if (page <= 2) {
+        end = 3;
+      } else if (page >= totalPages - 1) {
+        start = totalPages - 2;
+      }
+
+      if (start > 2) {
+        pages.push("...");
+      }
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (end < totalPages - 1) {
+        pages.push("...");
+      }
+
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-2 text-slate-500 text-sm w-full" dir="rtl">
@@ -63,17 +101,7 @@ export function SharedPagination({
 
       {/* Navigation Controls */}
       {totalPages > 1 && (
-        <div className="flex items-center gap-1.5" dir="ltr">
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-9 border-slate-200 rounded-lg bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2"
-            onClick={() => onPageChange(1)}
-            disabled={page === 1}
-            aria-label="الصفحة الأولى"
-          >
-            <ChevronsLeft className="size-4 text-slate-600" />
-          </Button>
+        <div className="flex items-center gap-1.5" dir="rtl">
           <Button
             variant="outline"
             size="icon"
@@ -82,12 +110,39 @@ export function SharedPagination({
             disabled={page === 1}
             aria-label="الصفحة السابقة"
           >
-            <ChevronLeft className="size-4 text-slate-600" />
+            <ChevronRight className="size-4 text-slate-600" />
           </Button>
           
-          <div className="flex items-center justify-center px-3 font-semibold text-slate-700">
-            {page}
-          </div>
+          {getPageNumbers().map((p, idx) => {
+            if (typeof p === "string") {
+              return (
+                <span
+                  key={`ellipsis-${idx}`}
+                  className="flex size-9 items-center justify-center text-slate-400 select-none"
+                >
+                  {p}
+                </span>
+              );
+            }
+
+            const isActive = p === page;
+
+            return (
+              <Button
+                key={p}
+                variant={isActive ? "default" : "outline"}
+                size="icon"
+                onClick={() => onPageChange(p)}
+                className={`size-9 rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2 ${
+                  isActive
+                    ? "bg-[#1E4632] text-white hover:bg-[#153224]"
+                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-800"
+                }`}
+              >
+                {p}
+              </Button>
+            );
+          })}
 
           <Button
             variant="outline"
@@ -97,17 +152,7 @@ export function SharedPagination({
             disabled={page === totalPages}
             aria-label="الصفحة التالية"
           >
-            <ChevronRight className="size-4 text-slate-600" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-9 border-slate-200 rounded-lg bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2"
-            onClick={() => onPageChange(totalPages)}
-            disabled={page === totalPages}
-            aria-label="الصفحة الأخيرة"
-          >
-            <ChevronsRight className="size-4 text-slate-600" />
+            <ChevronLeft className="size-4 text-slate-600" />
           </Button>
         </div>
       )}

@@ -9,8 +9,8 @@ export type ApiResponse<T> = {
   success: boolean;
   message: string;
   data: T;
-  meta?: Meta
-}
+  meta?: Meta;
+};
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -40,4 +40,15 @@ export interface User {
 export interface LoginResponseData {
   accessToken: string;
   user: User;
+}
+
+export interface QueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  active?: boolean | null;
+}
+
+export interface MutationOptions {
+  onSuccess?: () => void;
 }

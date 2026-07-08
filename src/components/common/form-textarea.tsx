@@ -3,7 +3,9 @@ import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-export interface FormTextareaProps extends React.ComponentProps<typeof Textarea> {
+export interface FormTextareaProps extends React.ComponentProps<
+  typeof Textarea
+> {
   label?: string;
   error?: string;
 }
@@ -18,7 +20,10 @@ export function FormTextarea({
   return (
     <div className="space-y-2 w-full">
       {label && (
-        <Label htmlFor={id} className="text-xs font-semibold text-slate-600 block">
+        <Label
+          htmlFor={id}
+          className="text-xs font-semibold text-slate-600 block"
+        >
           {label}
         </Label>
       )}
@@ -30,7 +35,7 @@ export function FormTextarea({
           error
             ? "border-red-300 focus-visible:border-red-500 focus-visible:ring-red-500/5"
             : "border-slate-200 focus-visible:border-[#1e4632] focus-visible:ring-[#1e4632]/5",
-          className
+          className,
         )}
         {...props}
       />

@@ -1,79 +1,68 @@
 "use client";
-
-import { useState } from "react";
+import { useMemo } from "react";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
-import { TableFilters } from "@/components/common/TableFilters";
+import { TableSearch } from "@/components/common/TableSearch";
+import { FilterDropdown } from "@/components/common/FilterDropdown";
 import { SharedTable } from "@/components/common/SharedTable";
-import { GradeForm } from "./GradeForm";
-import { useGrades } from "../hooks/useGrades";
-import { type Grade } from "../types";
-import { type GradeFormValues } from "../schemas/grade-schema";
-import { getGradeColumns } from "./columns";
-
-import { type ApiResponse } from "@/types";
 import { SharedModal } from "@/components/common/SharedModal";
 import { Card } from "@/components/ui/card";
+import { GradeForm } from "./GradeForm";
+import { useGradesQuery } from "../hooks/queries";
+import { useToggleGradeMutation } from "../hooks/mutations";
+import { getGradeColumns } from "./columns";
+import { useTableFilters } from "@/hooks/useTableFilters";
+import { useGradesModal } from "../state/useGradesModal";
+import { type Grade } from "../types";
+import { type ApiResponse } from "@/types";
 
 interface GradesListClientProps {
   initialData: ApiResponse<Grade[]>;
 }
 
 export function GradesListClient({ initialData }: GradesListClientProps) {
-  // Search & Pagination states
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [search, setSearch] = useState("");
-  const [activeFilter, setActiveFilter] = useState("");
-
-  // Modal states
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedGrade, setSelectedGrade] = useState<Grade | null>(null);
-
-  // Fetch and mutations encapsulated in useGrades hook
+  // Pagination, search, and filter state
   const {
-    grades,
-    total,
-    totalPages,
-    isLoading,
-    togglingId,
-    isSubmitting,
-    toggleStatus,
-    createGrade,
-    updateGrade,
-  } = useGrades({
-    page,
-    limit,
-    search,
-    activeFilter,
-    initialData,
-    onSuccessSubmit: () => {
-      setIsModalOpen(false);
-      setSelectedGrade(null);
-    },
-  });
+    params,
+    setPage,
+    handleSearchChange,
+    handleFilterChange,
+    handleLimitChange,
+  } = useTableFilters();
 
-  const handleToggleStatus = (id: string) => {
-    toggleStatus(id);
-  };
+  // Modal state & selected grade
+  const {
+    isOpen: isModalOpen,
+    selectedGrade,
+    openCreate,
+    openEdit,
+    close: closeModal,
+  } = useGradesModal();
 
-  const handleFormSubmit = async (values: GradeFormValues) => {
-    if (selectedGrade) {
-      updateGrade(selectedGrade.id, values);
-    } else {
-      createGrade(values);
-    }
-  };
+  // Data fetching
+  const { data, isLoading } = useGradesQuery(params, initialData);
 
-  // SharedTable columns mapping
-  const columns = getGradeColumns({
-    onEdit: (grade) => {
-      setSelectedGrade(grade);
-      setIsModalOpen(true);
-    },
-    onToggleStatus: handleToggleStatus,
-    togglingId,
-  });
+  const grades = data?.data || [];
+  const total = data?.meta?.total || 0;
+  const totalPages = data?.meta?.totalPages || 1;
+
+  // Mutations
+  const toggleMutation = useToggleGradeMutation();
+
+  const togglingId = toggleMutation.isPending
+    ? (toggleMutation.variables ?? null)
+    : null;
+  const toggleStatus = toggleMutation.mutate;
+
+  const columns = useMemo(
+    () =>
+      getGradeColumns({
+        onEdit: openEdit,
+        onToggleStatus: toggleStatus,
+        togglingId,
+      }),
+    [openEdit, toggleStatus, togglingId],
+  );
 
   return (
     <div className="space-y-6 text-right">
@@ -84,78 +73,58 @@ export function GradesListClient({ initialData }: GradesListClientProps) {
         actionButton={{
           label: "مرحلة جديدة",
           icon: Plus,
-          onClick: () => {
-            setSelectedGrade(null);
-            setIsModalOpen(true);
-          },
+          onClick: openCreate,
         }}
       />
 
       {/* 2. Filters & Table inside Glassy Card */}
       <Card className="space-y-4">
-        <TableFilters
-          searchPlaceholder="ابحث عن مرحلة دراسية..."
-          searchValue={search}
-          onSearchChange={(val) => {
-            setSearch(val);
-            setPage(1); // Reset page to 1 on new search
-          }}
-          filters={[
-            {
-              key: "active",
-              placeholder: "فلترة حسب الحالة",
-              options: [
-                { label: "نشط", value: "true" },
-                { label: "معطل", value: "false" },
-              ],
-            },
-          ]}
-          filterValues={{ active: activeFilter }}
-          onFilterChange={(key, val) => {
-            if (key === "active") {
-              setActiveFilter(val);
-              setPage(1); // Reset page to 1 on filter change
-            }
-          }}
-        />
+        <div
+          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-4"
+          dir="rtl"
+        >
+          <TableSearch
+            placeholder="ابحث عن مرحلة دراسية..."
+            value={params.search}
+            onChange={handleSearchChange}
+          />
+          <FilterDropdown
+            placeholder="فلترة حسب الحالة"
+            value={(params.active as unknown as string) || ""}
+            onChange={(val) => handleFilterChange("active", val)}
+            options={[
+              { label: "نشط", value: "true" },
+              { label: "معطل", value: "false" },
+            ]}
+          />
+        </div>
 
         <SharedTable
           columns={columns}
           data={grades}
           isLoading={isLoading}
-          page={page}
-          limit={limit}
+          page={params.page}
+          limit={params.limit}
           total={total}
           totalPages={totalPages}
           onPageChange={setPage}
-          onLimitChange={(val) => {
-            setLimit(val);
-            setPage(1);
-          }}
+          onLimitChange={handleLimitChange}
           emptyMessage="لم يتم العثور على أي مراحل دراسية."
         />
       </Card>
 
-      {/* 4. Form Modal (Shared Form Logic) */}
+      {/* 3. Form Modal (Shared Form Logic) */}
       <SharedModal
         isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedGrade(null);
-        }}
+        onClose={closeModal}
         title={
           selectedGrade ? "تعديل المرحلة الدراسية" : "إضافة مرحلة دراسية جديدة"
         }
       >
         <GradeForm
           isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedGrade(null);
-          }}
-          onSubmit={handleFormSubmit}
+          onClose={closeModal}
           grade={selectedGrade}
-          isSubmitting={isSubmitting}
         />
       </SharedModal>
     </div>
