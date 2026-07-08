@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎓 EduCenter - Educational Centers Management SaaS
 
-## Getting Started
+**EduCenter** is an enterprise-grade, high-performance Software-as-a-Service (SaaS) platform designed to streamline the operations of modern educational centers, academies, and private tutors. The application facilitates student tracking, teacher assignments, courses/grades enrollment, exam execution, financial subscription plans, and deep analytical reports under a unified Arabic-first interface.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Key Features
+
+*   **Arabic-First UI/UX**: Designed natively in professional Arabic utilizing modern typography (Cairo font), fluid animations, and premium dark/light interfaces.
+*   **Role-Based Access Control (RBAC)**: Comprehensive permission boundaries separating **Owners/Admins**, **Instructors**, and **Students** with automatic path routing.
+*   **Isomorphic Fetch Architecture**: Custom unified API Client (`serverApiClient`) with dynamic client/server detection and seamless isomorphic cookie forwarding.
+*   **Next.js 16 Edge Proxy**: Secure client-side route guard using the latest `proxy.ts` Edge specification to enforce authentication and roles checks.
+*   **Modular Feature Architecture**: Highly structured directory design prioritizing clean decoupling of domain concerns.
+*   **Performant Forms & Validation**: High-performance uncontrolled forms using `react-hook-form` coupled with runtime schema enforcement via `zod`.
+*   **TanStack Query State Sync**: Optimized client data fetching, mutation synchronization, and aggressive cache management.
+
+---
+
+## 🛠️ Technology Stack
+
+| Technology | Purpose | Key Libraries / Features |
+| :--- | :--- | :--- |
+| **Framework** | Server-Side Rendering & Routing | Next.js 16 (App Router), React 19 |
+| **Language** | Strict Type Safety | TypeScript 5.x |
+| **Styling** | Utility-first responsive design | Tailwind CSS 4.x, tw-animate-css |
+| **UI Components** | Accessible Primitive base | shadcn/ui, Radix UI |
+| **Form Handling** | Performance-oriented validation | React Hook Form, `@hookform/resolvers` |
+| **Validation** | Schema declarations | Zod |
+| **Data Fetching** | Server State management | TanStack React Query v5 |
+| **Visual Feedback** | Toast Alerts & Transitions | Sonner, Motion (Framer Motion) |
+
+---
+
+## 📂 Architecture & Directory Structure
+
+The repository follows a clean, feature-driven architecture. Common global structures reside at the root level of `src`, while domain-specific logic is entirely encapsulated within modular features.
+
+```
+src/
+├── app/                  # Next.js App Router Pages and Layouts (Layout composition only)
+├── components/           # Domain-independent global components
+│   ├── ui/               # Low-level primitive components (shadcn/ui)
+│   └── common/           # Custom reusable primitives (FormInput, MotionWrapper)
+├── features/             # Feature-based modular directories
+│   ├── auth/             # Authentication feature (Login, Register actions, LoginForm component)
+│   └── landing/          # Customer-facing marketing components and plans
+├── lib/                  # Library configurations and shared clients (apiClient)
+├── types/                # Project-wide TypeScript interfaces and types
+├── utils/                # Pure utility helpers (date formats, currency parses)
+├── constants/            # Global constant configurations (routes, roles)
+└── proxy.ts              # Next.js 16 Route Protection and redirection layer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Each module under `src/features/<name>/` strictly exposes its internal API through structured sub-directories:
+*   `actions/` — Server Actions.
+*   `components/` — Feature UI components.
+*   `schemas/` — Validation rules.
+*   `types/` — Domain types.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏁 Getting Started
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+*   Node.js 20.x or higher
+*   NPM 10.x or higher
+*   Backend API service running (usually [educenter-api](file:///d:/front/projects/center-education-saas/educenter-api))
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  Clone the repository and navigate to the directory:
+    ```bash
+    git clone https://github.com/AhmedHamdy434/educenter-website.git
+    cd educenter-website
+    ```
 
-## Deploy on Vercel
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3.  Configure Environment Variables:
+    Create a `.env` (or `.env.local`) in the root directory:
+    ```env
+    NEXT_PUBLIC_API_BASE_URL=http://localhost:5000
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+
+5.  Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+
+---
+
+## 🛡️ Route Protection & Middleware (Proxy)
+
+Next.js 16 named `proxy.ts` specification handles authentication and role redirection at the network edge:
+*   Unauthenticated users are restricted only to the Homepage (`/`) and Login page (`/login`).
+*   Authenticated sessions automatically redirect `/dashboard` request entry-points to role-specific layouts:
+    *   `OWNER` $\rightarrow$ `/dashboard/center-owner`
+    *   `TEACHER` $\rightarrow$ `/dashboard/instructor`
+    *   `STUDENT` $\rightarrow$ `/dashboard/student`
+*   Cross-role page requests (e.g. a student requesting Owner pages) are immediately caught and redirected back.
+
+---
+
+## 📜 Development Guidelines
+
+To contribute or write code for this repository, you **must** strictly review and follow the standards listed in [PROJECT_RULES.md](file:///d:/front/projects/center-education-saas/educenter-website/PROJECT_RULES.md). Key constraints include:
+1.  **Zero inline business logic inside pages**: Pages only orchestrate layouts.
+2.  **No `any` types**: Enforce strict TS configurations.
+3.  **Arabic Language Standard**: All UI copy and feedback toasts must use Cairo typography and standard Arabic grammar.
+4.  **No Raw Fetch**: Use `serverApiClient` for all outbound API communication.

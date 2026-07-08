@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import { Toaster } from "sonner";
+import { SITE_URL } from "@/constants";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import "./globals.css";
 
 const cairo = Cairo({
@@ -10,9 +12,34 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "EduCenter - منصة إدارة مراكز التعليم",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "EduCenter - منصة إدارة مراكز التعليم",
+    template: "%s | EduCenter",
+  },
   description: "منصة شاملة تساعدك على إدارة طلابك، معلميك، الدروس، الاختبارات، والتقارير في مكان واحد بكل سهولة واحترافية.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "EduCenter - منصة إدارة مراكز التعليم",
+    description: "منصة شاملة تساعدك على إدارة طلابك، معلميك، الدروس، الاختبارات، والتقارير في مكان واحد بكل سهولة واحترافية.",
+    url: SITE_URL,
+    siteName: "EduCenter",
+    locale: "ar_EG",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "EduCenter - منصة إدارة مراكز التعليم",
+    description: "منصة شاملة تساعدك على إدارة طلابك، معلميك، الدروس، الاختبارات، والتقارير في مكان واحد بكل سهولة واحترافية.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -26,7 +53,9 @@ export default function RootLayout({
       className={`${cairo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
+        <ReactQueryProvider>
+          {children}
+        </ReactQueryProvider>
         <Toaster position="top-center" richColors />
       </body>
     </html>

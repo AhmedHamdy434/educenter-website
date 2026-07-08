@@ -23,12 +23,18 @@ export type RequestOptions = {
   cache?: RequestCache;
 };
 
+export enum UserRole {
+  OWNER = "OWNER",
+  TEACHER = "TEACHER",
+  STUDENT = "STUDENT",
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
   phone?: string;
-  role?: string;
+  role?: UserRole;
 }
 
 export interface LoginResponseData {

@@ -1,0 +1,19 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "الإعدادات | الطالب",
+};
+
+export default function StudentSettingsPage() {
+  return (
+    <div className="space-y-6 text-right">
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold text-slate-800">الإعدادات</h1>
+        <p className="text-slate-500 text-sm">عرض وتعديل ملفك الشخصي وإعدادات حساب الطالب.</p>
+      </div>
+      <div className="rounded-xl border border-slate-100 bg-white p-8 shadow-sm">
+        <p className="text-slate-700 font-medium">محتوى صفحة الإعدادات والملف الشخصي</p>
+      </div>
+    </div>
+  );
+}

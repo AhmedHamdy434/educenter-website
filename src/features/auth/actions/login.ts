@@ -9,7 +9,7 @@ export async function loginAction(
   data: LoginFormValues
 ): Promise<ApiResponse<LoginResponseData>> {
   const result = await serverApiClient<LoginResponseData>({
-    url: "/api/auth/login",
+    url: "/auth/login",
     method: "POST",
     body: {
       identifier: data.identifier,

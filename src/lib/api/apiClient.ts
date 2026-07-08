@@ -46,7 +46,7 @@ export const serverApiClient = async <T>({
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
   try {
-    const res = await fetch(`${baseUrl}${url}${queryString}`, {
+    const res = await fetch(`${baseUrl}/api${url}${queryString}`, {
       method,
       headers: headersInit,
       body: body

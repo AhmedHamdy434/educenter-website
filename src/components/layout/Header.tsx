@@ -1,13 +1,13 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, GraduationCap, BookOpen } from "lucide-react";
+import { GraduationCap, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getCurrentUser } from "@/features/auth/actions/get-current-user";
+import { HeaderMobileMenu } from "./HeaderMobileMenu";
+import { HeaderNavLinks } from "./HeaderNavLinks";
 
-export function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("الرئيسية");
+export async function Header() {
+  const user = await getCurrentUser();
+  const isAuthenticated = !!user;
 
   const navItems = [
     { name: "الرئيسية", href: "#hero" },
@@ -32,7 +32,7 @@ export function Header() {
                 <span className="font-sans text-xl font-bold tracking-tight text-[#1E4632]">
                   EduCenter
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium -mt-1">
+                <span className="text-[10px] text-slate-600 font-medium -mt-1">
                   منصة مراكز التعليم
                 </span>
               </div>
@@ -40,92 +40,26 @@ export function Header() {
           </div>
 
           {/* Center: Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onClick={() => setActiveItem(item.name)}
-                className={`relative py-2 text-[15px] font-medium transition-colors hover:text-[#1E4632] ${
-                  activeItem === item.name
-                    ? "text-[#1E4632] font-semibold"
-                    : "text-slate-500"
-                }`}
-              >
-                {item.name}
-                {activeItem === item.name && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-[#1E4632]" />
-                )}
-              </a>
-            ))}
-          </nav>
+          <HeaderNavLinks navItems={navItems} />
 
           {/* Left Side: Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="#pricing">
-              <Button variant="brandOutline" size="brandMd">
+            <Button asChild variant="brandOutline" size="brandMd">
+              <Link href="#pricing">
                 جرب مجاناً
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button variant="brand" size="brandMd">
-                تسجيل الدخول
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+            <Button asChild variant="brand" size="brandMd">
+              <Link href={isAuthenticated ? "/dashboard" : "/login"}>
+                {isAuthenticated ? "لوحة التحكم" : "تسجيل الدخول"}
+              </Link>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:outline-none"
-            >
-              {isOpen ? <X className="size-6" /> : <Menu className="size-6" />}
-            </button>
-          </div>
+          <HeaderMobileMenu navItems={navItems} isAuthenticated={isAuthenticated} />
         </div>
       </div>
-
-      {/* Mobile Drawer Menu */}
-      {isOpen && (
-        <div className="md:hidden border-t border-slate-100 bg-white px-4 py-6 shadow-lg animate-in slide-in-from-top duration-200">
-          <div className="flex flex-col gap-4">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onClick={() => {
-                  setActiveItem(item.name);
-                  setIsOpen(false);
-                }}
-                className={`py-2 text-[16px] font-medium transition-colors hover:text-[#1E4632] ${
-                  activeItem === item.name
-                    ? "text-[#1E4632] font-semibold border-r-2 border-[#1E4632] pr-3"
-                    : "text-slate-600"
-                }`}
-              >
-                {item.name}
-              </a>
-            ))}
-            <hr className="my-2 border-slate-100" />
-            <div className="flex flex-col gap-3">
-              <Link href="#pricing" onClick={() => setIsOpen(false)}>
-                <Button
-                  variant="outline"
-                  className="w-full h-11 border-[#1E4632]/20 text-[#1E4632] hover:bg-[#F0F7F4] font-medium text-base rounded-lg"
-                >
-                  جرب مجاناً
-                </Button>
-              </Link>
-              <Link href="/login" onClick={() => setIsOpen(false)}>
-                <Button className="w-full h-11 bg-[#1E4632] hover:bg-[#163625] text-white font-medium text-base rounded-lg">
-                  تسجيل الدخول
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
