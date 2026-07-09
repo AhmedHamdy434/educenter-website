@@ -98,6 +98,7 @@ Encapsulate feature-specific logic inside `src/features/<feature-name>/`:
 ## 12. Constants & Utilities
 *   **Constants**: Name variables in `UPPER_SNAKE_CASE` (e.g., `API_TIMEOUT_MS`). Group local configurations inside the feature's constants folder.
 *   **Utilities**: Write helpers as pure, deterministic functions (e.g., date formats, currency parsers) inside `src/utils/`.
+*   **Shared Date & Time Utilities**: All schedule selectors (day list, hours, minutes, period dropdown options) and the time formatter function `formatTime` must be imported from `@/utils/time` instead of being re-declared locally in forms and columns.
 
 ---
 
@@ -192,4 +193,48 @@ Encapsulate feature-specific logic inside `src/features/<feature-name>/`:
     - SEO: 100
     - Best Practices: 100
     - Performance: as high as reasonably achievable.
+
+---
+
+## 22. Standard Feature Folder Structure & Patterns
+
+Every feature module (e.g., `src/features/students/`, `src/features/subjects/`, `src/features/teachers/`) must strictly adhere to the following sub-directory structure and component conventions:
+
+### Sub-directory Layout
+1. **`actions/`**: Server Action files (e.g., `<feature>-actions.ts`) containing API wrappers utilizing `serverApiClient` for data fetching/mutations.
+2. **`components/`**: Feature-specific UI components:
+   - **`<Feature>sListClient.tsx`**: The main page container (client component).
+   - **`<Feature>Form.tsx`**: The modal form component.
+   - **`columns.tsx`**: Standard column definition function `get<Feature>Columns` for tables.
+3. **`hooks/`**: TanStack Query custom queries and mutations (e.g., `queries.ts` and `mutations.ts`).
+4. **`schemas/`**: Zod validation schemas (e.g., `<feature>-schema.ts`).
+5. **`state/`**: Zustand stores for local/global feature state management (e.g., `use<Feature>Modal.ts`).
+6. **`types/`**: TypeScript interfaces and types for the feature (e.g., `index.ts`).
+7. **`utils/`**: Feature-specific pure functions or constant helpers.
+
+### Core Component Design Patterns
+
+#### 1. Page Client Container (`<Feature>sListClient.tsx`)
+Must orchestrate the main view components and should compose:
+- **`<PageHeader>`**: Renders the title, Arabic description, and a "create new" action button which sets the zustand modal state to open.
+- **`<TableSearch>`**: Input component for server-side search querying.
+- **`<FilterDropdown>`**: Custom filter select boxes (e.g. filter by grade or active status).
+- **`<SharedTable>`**: Grid table component accepting columns and data, with loading/pagination controls.
+- **`<SharedModal>`**: A popup wrapper triggered by `isModalOpen` which renders `<Feature>Form`.
+
+#### 2. Feature Form (`<Feature>Form.tsx`)
+Must manage item creation and editing using React Hook Form + Zod:
+- **`useForm<FormValues>`** with `resolver: zodResolver(<feature>Schema)`.
+- Use the **`control`** object and register inputs.
+- Form inputs must leverage standard styling wrapper components:
+  - **`<FormInput>`**: Standard text/number inputs.
+  - **`<FormSelect>`**: Single choice selector.
+  - **`<FormMultiSelect>`**: Custom multi-select dropdown with list filter and tag list output.
+  - **`<FormTextarea>`**: Richer description textarea.
+  - **`<FormActions>`**: Arabic-labeled submit/cancel buttons with dynamic loading indicators.
+
+#### 3. Column Definition (`columns.tsx`)
+Must define column metadata for rendering inside the table:
+- Exports `get<Feature>Columns({ onEdit, onToggleStatus, togglingId })` returning TanStack Table columns.
+- Renders cell templates, badges for boolean states, and localized text.
 

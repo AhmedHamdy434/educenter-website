@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "@/components/common/form-input";
 import { FormTextarea } from "@/components/common/form-textarea";
 import { FormActions } from "@/components/common/FormActions";
+import { FormMultiSelect } from "@/components/common/form-multi-select";
 import { teacherSchema, type TeacherFormValues } from "../schemas/teacher-schema";
 import { type Teacher } from "../types";
 import {
@@ -24,6 +25,7 @@ export function TeacherForm({ isOpen, onClose, teacher, subjectsOptions }: Teach
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors },
   } = useForm<TeacherFormValues>({
@@ -157,33 +159,15 @@ export function TeacherForm({ isOpen, onClose, teacher, subjectsOptions }: Teach
         />
       </div>
 
-      {/* Subjects Checkbox Selection */}
-      <div className="space-y-2 text-right">
-        <label className="text-xs font-semibold text-slate-600 block">
-          المواد الدراسية التي يدرسها
-        </label>
-        <div className="grid grid-cols-2 gap-2 border border-slate-200 rounded-xl p-4 max-h-48 overflow-y-auto" dir="rtl">
-          {subjectsOptions.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer select-none"
-            >
-              <input
-                type="checkbox"
-                value={opt.value}
-                className="rounded border-slate-300 text-[#1E4632] focus:ring-[#1E4632] size-4 cursor-pointer"
-                {...register("subjectIds")}
-              />
-              <span>{opt.label}</span>
-            </label>
-          ))}
-        </div>
-        {errors.subjectIds && (
-          <p className="text-xs text-red-500 font-semibold">
-            {errors.subjectIds.message}
-          </p>
-        )}
-      </div>
+      {/* Subjects Selection using Custom Multi-Select Dropdown */}
+      <FormMultiSelect
+        label="المواد الدراسية التي يدرسها"
+        name="subjectIds"
+        control={control}
+        options={subjectsOptions}
+        placeholder="اختر المواد الدراسية..."
+        error={errors.subjectIds?.message}
+      />
 
       <FormTextarea
         label="نبذة تعريفية أو سيرة ذاتية (اختياري)"

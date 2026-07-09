@@ -17,7 +17,7 @@ export default async function OwnerTeachersPage() {
 
   const subjectsOptions = (subjectsData?.data || []).map((subject) => ({
     value: subject.id,
-    label: subject.name,
+    label: `${subject.name} (${subject.grade.name})`,
   }));
 
   return (

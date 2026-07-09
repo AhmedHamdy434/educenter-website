@@ -47,8 +47,8 @@ export async function toggleSubjectStatusAction(
 
 export async function getSubjectsOptions(
   gradeId?: string,
-): Promise<ApiResponse<{ id: string; name: string }[]>> {
-  return serverApiClient<{ id: string; name: string }[]>({
+): Promise<ApiResponse<{ id: string; name: string; grade: { name: string } }[]>> {
+  return serverApiClient<{ id: string; name: string; grade: { name: string } }[]>({
     url: "/subjects/options",
     method: "GET",
     params: gradeId ? { gradeId } : undefined,
