@@ -1,19 +1,29 @@
 import type { Metadata } from "next";
+import { getTeachers } from "@/features/teachers/actions/teachers-actions";
+import { getSubjectsOptions } from "@/features/subjects/actions/subjects-actions";
+import { TeachersListClient } from "@/features/teachers/components/TeachersListClient";
 
 export const metadata: Metadata = {
-  title: "المعلمون | مدير المركز",
+  title: "المدرسون | مدير المركز",
+  description: "إدارة حسابات وبيانات معلمي المركز التعليمي والمواد الموكلة إليهم.",
 };
 
-export default function OwnerTeachersPage() {
+export default async function OwnerTeachersPage() {
+  // Fetch initial teachers and subjects options in parallel on the server
+  const [initialData, subjectsData] = await Promise.all([
+    getTeachers({ page: 1, limit: 10 }),
+    getSubjectsOptions(),
+  ]);
+
+  const subjectsOptions = (subjectsData?.data || []).map((subject) => ({
+    value: subject.id,
+    label: subject.name,
+  }));
+
   return (
-    <div className="space-y-6 text-right">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-slate-800">إدارة المعلمين</h1>
-        <p className="text-slate-500 text-sm">عرض وإدارة المعلمين المسجلين في المركز.</p>
-      </div>
-      <div className="rounded-xl border border-slate-100 bg-white p-8 shadow-sm">
-        <p className="text-slate-700 font-medium">محتوى صفحة إدارة المعلمين</p>
-      </div>
-    </div>
+    <TeachersListClient
+      initialData={initialData}
+      subjectsOptions={subjectsOptions}
+    />
   );
 }

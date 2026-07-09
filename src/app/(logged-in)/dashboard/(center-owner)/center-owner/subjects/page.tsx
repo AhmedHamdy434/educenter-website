@@ -1,19 +1,29 @@
 import type { Metadata } from "next";
+import { getSubjects } from "@/features/subjects/actions/subjects-actions";
+import { getGrades } from "@/features/grades/actions/grades-actions";
+import { SubjectsListClient } from "@/features/subjects/components/SubjectsListClient";
 
 export const metadata: Metadata = {
   title: "المواد الدراسية | مدير المركز",
+  description: "إدارة وتهيئة المواد والمناهج الدراسية التابعة للمركز التعليمي.",
 };
 
-export default function OwnerSubjectsPage() {
+export default async function OwnerSubjectsPage() {
+  // Fetch initial subjects and grades options in parallel on the server
+  const [initialData, gradesData] = await Promise.all([
+    getSubjects({ page: 1, limit: 10 }),
+    getGrades({ limit: 100, active: true }),
+  ]);
+
+  const gradesOptions = (gradesData?.data || []).map((grade) => ({
+    value: grade.id,
+    label: grade.name,
+  }));
+
   return (
-    <div className="space-y-6 text-right">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-slate-800">إدارة المواد الدراسية</h1>
-        <p className="text-slate-500 text-sm">عرض وإعداد المناهج والمواد الدراسية المتوفرة.</p>
-      </div>
-      <div className="rounded-xl border border-slate-100 bg-white p-8 shadow-sm">
-        <p className="text-slate-700 font-medium">محتوى صفحة إدارة المواد الدراسية</p>
-      </div>
-    </div>
+    <SubjectsListClient
+      initialData={initialData}
+      gradesOptions={gradesOptions}
+    />
   );
 }

@@ -5,7 +5,9 @@ export function useTableFilters(defaultLimit: number = 10) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(defaultLimit);
   const [search, setSearch] = useState("");
-  const [active, setActive] = useState(null);
+  const [active, setActive] = useState<any>(null);
+  const [gradeId, setGradeId] = useState<string | null>(null);
+  const [subjectId, setSubjectId] = useState<string | null>(null);
 
   const handleSearchChange = useCallback((val: string) => {
     setSearch(val);
@@ -13,8 +15,12 @@ export function useTableFilters(defaultLimit: number = 10) {
   }, []);
 
   const handleFilterChange = useCallback((key: string, val: any) => {
-    if (key == "active") {
+    if (key === "active") {
       setActive(val);
+    } else if (key === "gradeId") {
+      setGradeId(val);
+    } else if (key === "subjectId") {
+      setSubjectId(val);
     }
     setPage(1);
   }, []);
@@ -30,6 +36,8 @@ export function useTableFilters(defaultLimit: number = 10) {
       limit,
       search,
       active,
+      gradeId,
+      subjectId,
     },
     setPage,
     handleSearchChange,
