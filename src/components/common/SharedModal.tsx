@@ -18,14 +18,14 @@ export function SharedModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm transition-opacity" dir="rtl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm transition-opacity" dir="rtl">
       {/* Backdrop Click */}
       <div className="absolute inset-0" onClick={onClose} aria-hidden="true" />
 
       {/* Modal Dialog Content */}
-      <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl transition-all border border-slate-100 animate-in zoom-in-95 duration-200 z-10">
+      <div className="relative w-full max-w-lg max-h-[90vh] rounded-2xl p-4 bg-white shadow-2xl transition-all border border-slate-100 animate-in zoom-in-95 duration-200 z-10 flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div className="flex items-center justify-between border-b border-slate-100 b-4 shrink-0">
           <h2 className="text-lg font-bold text-slate-800">
             {title}
           </h2>
@@ -39,7 +39,7 @@ export function SharedModal({
         </div>
 
         {/* Body Content */}
-        <div className="mt-6">
+        <div className="mt-6 overflow-y-auto flex-1 pr-1 -mr-1">
           {children}
         </div>
       </div>

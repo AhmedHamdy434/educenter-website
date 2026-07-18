@@ -147,6 +147,18 @@ export const dashboardRoutes: RouteItem[] = [
     roles: [UserRole.STUDENT],
   },
   {
+    title: "سجل الحضور والغياب",
+    href: "/dashboard/student/attendance",
+    icon: CalendarCheck,
+    roles: [UserRole.STUDENT],
+  },
+  {
+    title: "سجل المدفوعات",
+    href: "/dashboard/student/payments",
+    icon: CreditCard,
+    roles: [UserRole.STUDENT],
+  },
+  {
     title: "الإعدادات",
     href: "/dashboard/student/settings",
     icon: Settings,

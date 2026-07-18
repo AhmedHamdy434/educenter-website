@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { type Group } from "../types";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -25,9 +26,12 @@ export function getGroupColumns({
       header: "المجموعة",
       cell: ({ row }: { row: { original: Group } }) => (
         <div className="flex flex-col text-right">
-          <span className="font-semibold text-slate-800">
+          <Link
+            href={`/dashboard/center-owner/groups/${row.original.id}`}
+            className="font-semibold text-[#1E4632] hover:underline"
+          >
             {row.original.name}
-          </span>
+          </Link>
           <span className="text-xs text-slate-400">
             {row.original.grade.name}
           </span>
@@ -60,7 +64,7 @@ export function getGroupColumns({
         const capacity = row.original.capacity;
         return (
           <span className="text-sm font-semibold text-slate-700">
-            {enrolled} / {capacity ? capacity : "∞"}
+            {enrolled} {capacity ? `/${capacity}` : ""}
           </span>
         );
       },

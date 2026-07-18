@@ -33,6 +33,9 @@ export interface Group {
     };
   };
   schedule: GroupScheduleItem[];
+  monthlyFee: number;
+  startDate: string;
+  monthsCount: number;
   _count: {
     students: number;
   };
@@ -43,6 +46,7 @@ export interface Group {
 export interface GroupStudent {
   id: string;
   joinedAt: string;
+  subscriptionStartDate?: string;
   student: {
     id: string;
     parentPhone: string;
@@ -82,6 +86,9 @@ export interface CreateGroupDTO {
     hour: number;
     minute: number;
   }[];
+  monthlyFee: number;
+  startDate: string;
+  monthsCount: number;
 }
 
 export interface UpdateGroupDTO {
@@ -95,5 +102,33 @@ export interface UpdateGroupDTO {
     hour: number;
     minute: number;
   }[];
+  monthlyFee?: number;
+  startDate?: string;
+  monthsCount?: number;
   isActive?: boolean;
 }
+
+export interface GroupStudentPaymentDetail {
+  id: string;
+  subscriptionDate: string;
+  amount: number;
+  paidAt: string;
+  notes: string | null;
+}
+
+export interface GroupStudentPaymentInfo {
+  groupStudentId: string;
+  studentId: string;
+  studentInfo: {
+    fullName: string;
+    email: string;
+    phone: string;
+    avatar: string | null;
+  };
+  subscriptionStartDate: string;
+  monthlyFee: number;
+  requiredMonths: string[];
+  paidMonths: GroupStudentPaymentDetail[];
+  unpaidMonths: string[];
+}
+

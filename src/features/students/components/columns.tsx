@@ -4,12 +4,14 @@ import { Switch } from "@/components/ui/switch";
 
 interface ColumnsProps {
   onEdit: (student: Student) => void;
+  onViewPayments: (student: Student) => void;
   onToggleStatus: (id: string) => void;
   togglingId: string | null;
 }
 
 export function getStudentColumns({
   onEdit,
+  onViewPayments,
   onToggleStatus,
   togglingId,
 }: ColumnsProps) {
@@ -86,14 +88,24 @@ export function getStudentColumns({
       id: "actions",
       header: "الإجراءات",
       cell: ({ row }: { row: { original: Student } }) => (
-        <Button
-          onClick={() => onEdit(row.original)}
-          variant="brandOutline"
-          size="sm"
-          className="h-8 rounded-lg text-[#1E4632] border-[#1E4632]/20 hover:bg-[#F0F7F4]"
-        >
-          تعديل
-        </Button>
+        <div className="flex gap-2 justify-center">
+          <Button
+            onClick={() => onEdit(row.original)}
+            variant="brandOutline"
+            size="sm"
+            className="h-8 rounded-lg text-[#1E4632] border-[#1E4632]/20 hover:bg-[#F0F7F4]"
+          >
+            تعديل
+          </Button>
+          <Button
+            onClick={() => onViewPayments(row.original)}
+            variant="ghost"
+            size="sm"
+            className="h-8 rounded-lg text-slate-600 hover:bg-slate-100 border border-slate-200/50"
+          >
+            المدفوعات
+          </Button>
+        </div>
       ),
     },
   ];

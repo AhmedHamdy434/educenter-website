@@ -48,3 +48,15 @@ export interface UpdateStudentDTO {
   gradeId?: string;
   isActive?: boolean;
 }
+
+export interface StudentPayment {
+  id: string;
+  subscriptionDate: string;
+  amount: number;
+  paidAt: string;
+  notes: string | null;
+  group: {
+    id: string;
+    name: string;
+  };
+}

@@ -25,14 +25,12 @@ interface GroupsListClientProps {
   initialData: ApiResponse<Group[]>;
   gradesOptions: SelectOption[];
   subjectsOptions: SelectOption[];
-  teachersOptions: SelectOption[];
 }
 
 export function GroupsListClient({
   initialData,
   gradesOptions,
   subjectsOptions,
-  teachersOptions,
 }: GroupsListClientProps) {
   // Pagination, search, and filter state
   const {
@@ -177,7 +175,6 @@ export function GroupsListClient({
           onClose={closeModal}
           group={selectedGroup}
           gradesOptions={gradesOptions}
-          teachersOptions={teachersOptions}
         />
       </SharedModal>
     </div>

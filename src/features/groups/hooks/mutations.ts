@@ -6,6 +6,7 @@ import {
   toggleGroupStatusAction,
   addStudentsToGroupAction,
   removeStudentsFromGroupAction,
+  payGroupStudentMonthAction,
 } from "../actions/groups-actions";
 import { type GroupFormValues } from "../schemas/group-schema";
 import { handleResponseToast } from "@/lib/api/handleResponseToast";
@@ -41,6 +42,9 @@ export function useCreateGroupMutation() {
         teacherId: values.teacherId,
         capacity: values.capacity || undefined,
         schedule: values.schedule,
+        monthlyFee: values.monthlyFee,
+        startDate: values.startDate,
+        monthsCount: values.monthsCount,
       });
     },
     onSuccess: (result) => {
@@ -69,6 +73,9 @@ export function useUpdateGroupMutation() {
         teacherId: values.teacherId,
         capacity: values.capacity || undefined,
         schedule: values.schedule,
+        monthlyFee: values.monthlyFee,
+        startDate: values.startDate,
+        monthsCount: values.monthsCount,
       });
     },
     onSuccess: (result) => {
@@ -98,10 +105,12 @@ export function useAddStudentsToGroupMutation() {
     mutationFn: async ({
       id,
       studentIds,
+      subscriptionStartDate,
     }: {
       id: string;
       studentIds: string[];
-    }) => addStudentsToGroupAction(id, studentIds),
+      subscriptionStartDate?: string;
+    }) => addStudentsToGroupAction(id, studentIds, subscriptionStartDate),
     onSuccess: (result) => {
       handleResponseToast(result);
       if (result.success) {
@@ -129,3 +138,27 @@ export function useRemoveStudentsFromGroupMutation() {
     },
   });
 }
+
+export function usePayGroupStudentMonthMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      groupStudentId,
+      subscriptionDate,
+      notes,
+    }: {
+      groupStudentId: string;
+      subscriptionDate: string;
+      notes?: string;
+    }) => payGroupStudentMonthAction(groupStudentId, subscriptionDate, notes),
+    onSuccess: (result) => {
+      handleResponseToast(result);
+      if (result.success) {
+        // Invalidate groups and student payments caches
+        queryClient.invalidateQueries({ queryKey: groupsKeys.all });
+        queryClient.invalidateQueries({ queryKey: ["students", "payments"] });
+      }
+    },
+  });
+}
+

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { TableSearch } from "@/components/common/TableSearch";
@@ -8,6 +8,7 @@ import { SharedTable } from "@/components/common/SharedTable";
 import { SharedModal } from "@/components/common/SharedModal";
 import { Card } from "@/components/ui/card";
 import { StudentForm } from "./StudentForm";
+import { StudentPaymentsModal } from "./StudentPaymentsModal";
 import { useStudentsQuery } from "../hooks/queries";
 import { useToggleStudentMutation } from "../hooks/mutations";
 import { getStudentColumns } from "./columns";
@@ -22,6 +23,8 @@ interface StudentsListClientProps {
 }
 
 export function StudentsListClient({ initialData, gradesOptions }: StudentsListClientProps) {
+  const [paymentHistoryStudent, setPaymentHistoryStudent] = useState<Student | null>(null);
+
   // Pagination, search, and filter state
   const {
     params,
@@ -67,6 +70,7 @@ export function StudentsListClient({ initialData, gradesOptions }: StudentsListC
     () =>
       getStudentColumns({
         onEdit: openEdit,
+        onViewPayments: setPaymentHistoryStudent,
         onToggleStatus: toggleStatus,
         togglingId,
       }),
@@ -146,6 +150,16 @@ export function StudentsListClient({ initialData, gradesOptions }: StudentsListC
           gradesOptions={gradesOptions}
         />
       </SharedModal>
+
+      {/* 4. Payments History Modal */}
+      {paymentHistoryStudent && (
+        <StudentPaymentsModal
+          isOpen={!!paymentHistoryStudent}
+          onClose={() => setPaymentHistoryStudent(null)}
+          studentId={paymentHistoryStudent.id}
+          studentName={paymentHistoryStudent.user.fullName}
+        />
+      )}
     </div>
   );
 }

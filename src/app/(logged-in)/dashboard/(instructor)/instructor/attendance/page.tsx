@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
+import { getGroups } from "@/features/groups/actions/groups-actions";
+import { TeacherAttendanceList } from "@/features/attendance/components/TeacherAttendanceList";
 
 export const metadata: Metadata = {
   title: "التحضير والغياب | المعلم",
+  description: "تسجيل حضور وغياب الطلاب للمجموعات المختلفة.",
 };
 
-export default function TeacherAttendancePage() {
-  return (
-    <div className="space-y-6 text-right">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-slate-800">إدارة التحضير والغياب</h1>
-        <p className="text-slate-500 text-sm">تسجيل حضور وغياب الطلاب للمجموعات المختلفة.</p>
-      </div>
-      <div className="rounded-xl border border-slate-100 bg-white p-8 shadow-sm">
-        <p className="text-slate-700 font-medium">محتوى صفحة التحضير والغياب</p>
-      </div>
-    </div>
-  );
+export default async function TeacherAttendancePage() {
+  // Fetch initial group list for the logged-in teacher (filtered by role at backend)
+  const initialGroups = await getGroups({ limit: 100 });
+
+  return <TeacherAttendanceList initialData={initialGroups} />;
 }

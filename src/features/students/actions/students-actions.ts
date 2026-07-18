@@ -1,8 +1,9 @@
 "use server";
 
 import { serverApiClient } from "@/lib/api/apiClient";
-import { type Student, type CreateStudentDTO, type UpdateStudentDTO } from "../types";
+import { type Student, type CreateStudentDTO, type UpdateStudentDTO, type StudentPayment } from "../types";
 import { type ApiResponse, QueryParams } from "@/types";
+
 
 export async function getStudents(
   params: QueryParams & { gradeId?: string },
@@ -42,5 +43,15 @@ export async function toggleStudentStatusAction(
   return serverApiClient<Student>({
     url: `/students/${id}/toggle-status`,
     method: "PATCH",
+  });
+}
+
+export async function getStudentPaymentsAction(
+  studentId: string,
+): Promise<ApiResponse<StudentPayment[]>> {
+  return serverApiClient<StudentPayment[]>({
+    url: `/students/${studentId}/payments`,
+    method: "GET",
+    cache: "no-store",
   });
 }

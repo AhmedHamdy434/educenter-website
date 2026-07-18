@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useEffect, useState, useRef } from "react";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -14,7 +14,8 @@ import {
   useCreateGroupMutation,
   useUpdateGroupMutation,
 } from "../hooks/mutations";
-import { getSubjectsOptions } from "@/features/subjects/actions/subjects-actions";
+import { useSubjectsOptionsQuery } from "@/features/subjects/hooks/queries";
+import { useTeachersOptionsQuery } from "@/features/teachers/hooks/queries";
 import {
   DAY_NAMES_AR,
   formatTime,
@@ -29,7 +30,6 @@ interface GroupFormProps {
   onClose: () => void;
   group?: Group | null;
   gradesOptions: SelectOption[];
-  teachersOptions: SelectOption[];
 }
 
 export function GroupForm({
@@ -37,10 +37,8 @@ export function GroupForm({
   onClose,
   group,
   gradesOptions,
-  teachersOptions,
 }: GroupFormProps) {
-  const [subjectsOptions, setSubjectsOptions] = useState<SelectOption[]>([]);
-  const [isSubjectsLoading, setIsSubjectsLoading] = useState(false);
+
 
   // Time picker temporary state
   const [tempDay, setTempDay] = useState<string>("SATURDAY");
@@ -53,17 +51,24 @@ export function GroupForm({
     handleSubmit,
     control,
     reset,
-    watch,
+    setValue,
     formState: { errors },
   } = useForm<GroupFormValues>({
     resolver: zodResolver(groupSchema),
     defaultValues: {
-      name: "",
-      gradeId: "",
-      subjectId: "",
-      teacherId: "",
-      capacity: null,
-      schedule: [],
+      name: group?.name || "",
+      gradeId: group?.gradeId || "",
+      subjectId: group?.subjectId || "",
+      teacherId: group?.teacherId || "",
+      capacity: group?.capacity ?? null,
+      monthlyFee: group?.monthlyFee ?? 0,
+      startDate: group?.startDate ? group.startDate.split("T")[0] : "",
+      monthsCount: group?.monthsCount ?? 1,
+      schedule: group?.schedule.map((item) => ({
+        day: item.day,
+        hour: item.hour,
+        minute: item.minute,
+      })) || [],
     },
   });
 
@@ -77,29 +82,35 @@ export function GroupForm({
   const { mutateAsync: updateGroup, isPending: isUpdatePending } =
     useUpdateGroupMutation();
 
-  const selectedGradeId = watch("gradeId");
+  const selectedGradeId = useWatch({ control, name: "gradeId" });
+  const selectedSubjectId = useWatch({ control, name: "subjectId" });
 
-  // Fetch subjects options dynamically when selected grade changes
+  // Fetch subjects options via React Query
+  const { data: subjectsOptions = [], isLoading: isSubjectsLoading } =
+    useSubjectsOptionsQuery(selectedGradeId, isOpen);
+
+  // Fetch teachers options via React Query
+  const { data: teachersList = [], isLoading: isTeachersLoading } =
+    useTeachersOptionsQuery(selectedSubjectId, isOpen);
+
+  // Keep track of previous values to handle cascading resets only on user changes
+  const prevGradeIdRef = useRef(selectedGradeId);
+  const prevSubjectIdRef = useRef(selectedSubjectId);
+
   useEffect(() => {
-    if (selectedGradeId) {
-      setIsSubjectsLoading(true);
-      getSubjectsOptions(selectedGradeId)
-        .then((res) => {
-          if (res.success) {
-            const mapped = (res.data || []).map((s) => ({
-              value: s.id,
-              label: `${s.name} (${s.grade.name})`,
-            }));
-            setSubjectsOptions(mapped);
-          }
-        })
-        .finally(() => {
-          setIsSubjectsLoading(false);
-        });
-    } else {
-      setSubjectsOptions([]);
+    if (prevGradeIdRef.current && prevGradeIdRef.current !== selectedGradeId) {
+      setValue("subjectId", "");
+      setValue("teacherId", "");
     }
-  }, [selectedGradeId]);
+    prevGradeIdRef.current = selectedGradeId;
+  }, [selectedGradeId, setValue]);
+
+  useEffect(() => {
+    if (prevSubjectIdRef.current && prevSubjectIdRef.current !== selectedSubjectId) {
+      setValue("teacherId", "");
+    }
+    prevSubjectIdRef.current = selectedSubjectId;
+  }, [selectedSubjectId, setValue]);
 
   // Populate form values if editing
   useEffect(() => {
@@ -110,6 +121,9 @@ export function GroupForm({
         subjectId: group.subjectId,
         teacherId: group.teacherId,
         capacity: group.capacity,
+        monthlyFee: group.monthlyFee,
+        startDate: group.startDate ? group.startDate.split("T")[0] : "",
+        monthsCount: group.monthsCount,
         schedule: group.schedule.map((item) => ({
           day: item.day,
           hour: item.hour,
@@ -123,6 +137,9 @@ export function GroupForm({
         subjectId: "",
         teacherId: "",
         capacity: null,
+        monthlyFee: 0,
+        startDate: "",
+        monthsCount: 1,
         schedule: [],
       });
     }
@@ -204,6 +221,41 @@ export function GroupForm({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormInput
+          label="سعر الاشتراك الشهري (ج.م)"
+          id="monthlyFee"
+          type="number"
+          step="0.01"
+          placeholder="مثال: 500"
+          error={errors.monthlyFee?.message}
+          {...register("monthlyFee", {
+            valueAsNumber: true,
+            setValueAs: (val) => (val === "" || isNaN(Number(val)) ? 0 : Number(val)),
+          })}
+        />
+
+        <FormInput
+          label="تاريخ بداية المجموعة"
+          id="startDate"
+          type="date"
+          error={errors.startDate?.message}
+          {...register("startDate")}
+        />
+
+        <FormInput
+          label="مدة المجموعة بالشهور"
+          id="monthsCount"
+          type="number"
+          placeholder="مثال: 3"
+          error={errors.monthsCount?.message}
+          {...register("monthsCount", {
+            valueAsNumber: true,
+            setValueAs: (val) => (val === "" || isNaN(Number(val)) ? 1 : Number(val)),
+          })}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormSelect
           label="المرحلة الدراسية"
           name="gradeId"
@@ -232,8 +284,14 @@ export function GroupForm({
           label="المعلم المسؤول"
           name="teacherId"
           control={control}
-          options={teachersOptions}
-          placeholder="اختر المعلم..."
+          options={teachersList}
+          placeholder={
+            isTeachersLoading
+              ? "جاري التحميل..."
+              : selectedSubjectId
+              ? "اختر المعلم..."
+              : "اختر المادة أولاً"
+          }
           error={errors.teacherId?.message}
         />
       </div>
@@ -245,72 +303,42 @@ export function GroupForm({
         </h3>
 
         {/* Temporary inputs to build a schedule item */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-          <div className="space-y-1">
-            <span className="text-xs text-slate-500 font-medium block">اليوم</span>
-            <select
-              value={tempDay}
-              onChange={(e) => setTempDay(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm outline-none text-slate-700 focus:border-[#1E4632]"
-            >
-              {DAYS_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+          <FormSelect
+            label="اليوم"
+            value={tempDay}
+            onValueChange={setTempDay}
+            options={DAYS_OPTIONS}
+          />
 
-          <div className="space-y-1">
-            <span className="text-xs text-slate-500 font-medium block">الساعة</span>
-            <select
-              value={tempHour}
-              onChange={(e) => setTempHour(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm outline-none text-slate-700 focus:border-[#1E4632]"
-            >
-              {HOUR_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <FormSelect
+            label="الساعة"
+            value={tempHour}
+            onValueChange={setTempHour}
+            options={HOUR_OPTIONS}
+          />
 
-          <div className="space-y-1">
-            <span className="text-xs text-slate-500 font-medium block">الدقيقة</span>
-            <select
-              value={tempMinute}
-              onChange={(e) => setTempMinute(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm outline-none text-slate-700 focus:border-[#1E4632]"
-            >
-              {MINUTE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <FormSelect
+            label="الدقيقة"
+            value={tempMinute}
+            onValueChange={setTempMinute}
+            options={MINUTE_OPTIONS}
+          />
 
-          <div className="flex gap-2 items-center">
-            <div className="space-y-1 flex-1">
-              <span className="text-xs text-slate-500 font-medium block">الفترة</span>
-              <select
+          <div className="flex gap-2 items-end">
+            <div className="flex-1">
+              <FormSelect
+                label="الفترة"
                 value={tempPeriod}
-                onChange={(e) => setTempPeriod(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm outline-none text-slate-700 focus:border-[#1E4632]"
-              >
-                {PERIOD_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+                onValueChange={setTempPeriod}
+                options={PERIOD_OPTIONS}
+              />
             </div>
 
             <button
               type="button"
               onClick={handleAddScheduleItem}
-              className="h-10 px-3 rounded-lg bg-[#1E4632] hover:bg-[#1E4632]/90 text-white flex items-center justify-center transition-colors shrink-0"
+              className="h-11 px-4 rounded-xl bg-[#1E4632] hover:bg-[#1E4632]/90 text-white flex items-center justify-center transition-colors shrink-0"
               title="إضافة موعد"
             >
               <Plus className="size-4" />

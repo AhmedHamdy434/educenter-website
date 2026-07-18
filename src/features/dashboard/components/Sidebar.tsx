@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { GraduationCap, BookOpen, LogOut, HelpCircle } from "lucide-react";
-import { dashboardRoutes } from "../constants/routes-config";
+
+import { logoutAction } from "@/features/auth/actions/logout";
+import { handleResponseToast } from "@/lib/api/handleResponseToast";
 import { User, UserRole } from "@/types";
 import { cn } from "@/lib/utils";
+import { dashboardRoutes } from "../constants/routes-config";
 
 interface SidebarProps {
   role: UserRole;
@@ -28,14 +31,15 @@ export function Sidebar({ role, user, onClose }: SidebarProps) {
     route.roles.includes(role)
   );
 
-  const handleLogout = () => {
-    // Clear token cookie
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    
-    // Redirect to login
-    router.push("/login");
-    router.refresh();
-    if (onClose) onClose();
+  const handleLogout = async () => {
+    const result = await logoutAction();
+    handleResponseToast(result);
+    if (result.success) {
+      // Redirect to login
+      router.push("/login");
+      router.refresh();
+      if (onClose) onClose();
+    }
   };
 
   return (

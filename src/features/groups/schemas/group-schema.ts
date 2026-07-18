@@ -38,6 +38,16 @@ export const groupSchema = z.object({
   schedule: z
     .array(scheduleItemSchema)
     .min(1, { message: "يجب إضافة موعد أسبوعي واحد على الأقل" }),
+  monthlyFee: z
+    .number({ message: "سعر الاشتراك الشهري مطلوب" })
+    .min(0, { message: "سعر الاشتراك لا يمكن أن يكون أقل من 0" }),
+  startDate: z
+    .string({ message: "تاريخ بداية المجموعة مطلوب" })
+    .min(1, { message: "تاريخ بداية المجموعة مطلوب" }),
+  monthsCount: z
+    .number({ message: "مدة المجموعة بالشهور مطلوبة" })
+    .int({ message: "المدة بالشهور يجب أن تكون رقماً صحيحاً" })
+    .min(1, { message: "المدة يجب أن تكون شهراً واحداً على الأقل" }),
 });
 
 export type GroupFormValues = z.infer<typeof groupSchema>;

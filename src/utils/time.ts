@@ -48,3 +48,26 @@ export const formatTime = (hour: number, minute: number): string => {
   const displayHour = hour % 12 === 0 ? 12 : hour % 12;
   return `${displayHour}:${minStr} ${ampm}`;
 };
+
+export const formatFullDate = (dateStr: string): string => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  return `${date.toLocaleDateString("ar-EG", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })} ${date.toLocaleTimeString("ar-EG", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
+};
+
+export const formatMonthName = (monthStr: string): string => {
+  if (!monthStr) return "";
+  const date = new Date(monthStr);
+  return date.toLocaleDateString("ar-EG", {
+    year: "numeric",
+    month: "long",
+  });
+};
+

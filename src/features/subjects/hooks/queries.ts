@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSubjects } from "../actions/subjects-actions";
+import { getSubjects, getSubjectsOptions } from "../actions/subjects-actions";
 import { subjectsKeys } from "../utils/queryKeys";
 import { type Subject } from "../types";
 import { QueryParams, type ApiResponse } from "@/types";
@@ -22,5 +22,20 @@ export function useSubjectsQuery(
       return getSubjects(params);
     },
     initialData: isInitialParams ? initialData : undefined,
+  });
+}
+
+export function useSubjectsOptionsQuery(gradeId?: string, enabled = true) {
+  return useQuery({
+    queryKey: subjectsKeys.options(gradeId),
+    queryFn: async () => {
+      const res = await getSubjectsOptions(gradeId);
+      if (!res.success) throw new Error(res.message);
+      return (res.data || []).map((s) => ({
+        value: s.id,
+        label: `${s.name} (${s.grade.name})`,
+      }));
+    },
+    enabled: enabled && !!gradeId,
   });
 }

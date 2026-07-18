@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStudents } from "../actions/students-actions";
+import { getStudents, getStudentPaymentsAction } from "../actions/students-actions";
 import { studentsKeys } from "../utils/queryKeys";
 import { type Student } from "../types";
 import { QueryParams, type ApiResponse } from "@/types";
@@ -22,5 +22,15 @@ export function useStudentsQuery(
       return getStudents(params);
     },
     initialData: isInitialParams ? initialData : undefined,
+  });
+}
+
+export function useStudentPaymentsQuery(studentId: string, enabled = true) {
+  return useQuery({
+    queryKey: studentsKeys.payments(studentId),
+    queryFn: async () => {
+      return getStudentPaymentsAction(studentId);
+    },
+    enabled: !!studentId && enabled,
   });
 }
