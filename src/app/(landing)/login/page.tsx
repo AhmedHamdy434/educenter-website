@@ -34,12 +34,12 @@ export default function LoginPage() {
           </div>
 
           {/* Premium Illustration */}
-          <div className="relative z-10 w-full aspect-16/10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 bg-emerald-950/20 max-w-lg my-8">
+          <div className="relative z-10 w-full aspect-16/10 min-h-55 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 bg-emerald-950/20 max-w-lg my-8">
             <Image
               src="/images/login-illustrations.png"
               alt="EduCenter Dashboard Illustration"
               fill
-              sizes="35vw"
+              sizes="(max-width: 1024px) 100vw, 35vw"
               priority
               className="object-cover"
             />

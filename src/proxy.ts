@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+interface JwtPayload {
+  role?: string;
+  exp?: number;
+  [key: string]: unknown;
+}
+
 // Helper function to decode JWT payload safely in Next.js Edge Runtime
-function decodeJwt(token: string) {
+function decodeJwt(token: string): JwtPayload | null {
   try {
-    const base64Url = token.split(".")[1];
+    const parts = token.split(".");
+    if (parts.length < 2) return null;
+    const base64Url = parts[1];
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const jsonPayload = decodeURIComponent(
       atob(base64)
@@ -32,30 +40,57 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. If user IS logged in
+  // 2. Decode JWT and check expiration & role
   const payload = decodeJwt(token);
-  const role = payload?.role; // OWNER | ADMIN | TEACHER | STUDENT
+  const isExpired = !!payload?.exp && payload.exp * 1000 < Date.now();
+  const role = payload?.role; // OWNER | TEACHER | STUDENT
 
-  // If token is invalid or has no role, clear token and redirect to login
-  if (!role || role === "ADMIN") {
-    const response = NextResponse.redirect(new URL("/login", request.url));
+  // If token is invalid, expired, or has no valid role, clear token
+  if (!payload || isExpired || !role || role === "ADMIN") {
+    // If accessing protected routes, redirect to login with token cleared
+    if (pathname !== "/" && pathname !== "/login") {
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.delete("token");
+      return response;
+    }
+
+    // If accessing public pages ("/" or "/login"), proceed as guest and strip stale token
+    const requestHeaders = new Headers(request.headers);
+    const cookieHeader = request.headers.get("cookie") || "";
+    const updatedCookieHeader = cookieHeader
+      .split(";")
+      .map((c) => c.trim())
+      .filter((c) => !c.startsWith("token="))
+      .join("; ");
+
+    if (updatedCookieHeader) {
+      requestHeaders.set("cookie", updatedCookieHeader);
+    } else {
+      requestHeaders.delete("cookie");
+    }
+
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
     response.cookies.delete("token");
     return response;
   }
 
-  // If logged in and trying to access login page, redirect to their dashboard
+  // 3. If logged in with a valid token and trying to access login page, redirect to their dashboard
   if (pathname === "/login") {
     return redirectRoleDashboard(role, request.url);
   }
 
-  // Handle dashboard paths protection based on roles
+  // 4. Handle dashboard paths protection based on roles
   if (pathname.startsWith("/dashboard")) {
     // If accessing "/dashboard" itself, redirect to their role-specific dashboard
     if (pathname === "/dashboard" || pathname === "/dashboard/") {
       return redirectRoleDashboard(role, request.url);
     }
 
-    // Protect "/dashboard/center-owner" -> only OWNER and ADMIN allowed
+    // Protect "/dashboard/center-owner" -> only OWNER allowed
     if (pathname.startsWith("/dashboard/center-owner") && role !== "OWNER") {
       return redirectRoleDashboard(role, request.url);
     }

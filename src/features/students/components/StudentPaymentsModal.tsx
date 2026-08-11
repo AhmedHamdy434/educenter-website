@@ -1,6 +1,6 @@
 "use client";
 
-import { Landmark, Loader2, AlertCircle } from "lucide-react";
+import { Landmark, Loader2 } from "lucide-react";
 import { SharedModal } from "@/components/common/SharedModal";
 import { useStudentPaymentsQuery } from "../hooks/queries";
 import { formatFullDate, formatMonthName } from "@/utils/time";

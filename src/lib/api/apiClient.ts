@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestOptions, ApiResponse } from "@/types";
 import { buildParams } from "./buildParams";
 
@@ -17,8 +16,8 @@ export const serverApiClient = async <T>({
       const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
       token = cookieStore.get("token")?.value;
-    } catch (e) {
-      console.error("Error accessing server cookies:", e);
+    } catch {
+      // Cookies may be unavailable in some server execution contexts
     }
   } else {
     // Client-side: read token from cookies
@@ -30,7 +29,7 @@ export const serverApiClient = async <T>({
 
   const query = buildParams(params);
   const queryString = query ? `?${query}` : "";
-  const isFormData = body instanceof FormData;
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
 
   const headersInit: Record<string, string> = {
     ...(token && {
@@ -51,28 +50,79 @@ export const serverApiClient = async <T>({
       headers: headersInit,
       body: body
         ? isFormData
-          ? (body as any)
+          ? (body as FormData)
           : JSON.stringify(body)
         : undefined,
       cache,
     });
-    const data = await res.json();
+
+    let data: Record<string, unknown> = {};
+    try {
+      data = await res.json();
+    } catch {
+      data = {};
+    }
+
+    // Handle 401 Unauthorized (expired or invalid token)
+    if (res.status === 401) {
+      if (typeof window !== "undefined") {
+        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
+      } else {
+        try {
+          const { cookies } = await import("next/headers");
+          const cookieStore = await cookies();
+          cookieStore.delete("token");
+        } catch {
+          // Mutating cookies during RSC render is not allowed by Next.js and safely ignored
+        }
+      }
+
+      const rawMsg = data.message;
+      const message = Array.isArray(rawMsg)
+        ? rawMsg.join(", ")
+        : typeof rawMsg === "string"
+        ? rawMsg
+        : "انتهت صلاحية الجلسة أو غير مصرح لك بالوصول. يرجى تسجيل الدخول مجدداً.";
+
+      return {
+        success: false,
+        message,
+        data: null as unknown as T,
+      };
+    }
 
     if (!res.ok) {
-      console.error(new Error(data.message || "Something went wrong"));
+      const rawMsg = data.message;
+      const errorMessage = Array.isArray(rawMsg)
+        ? rawMsg.join(", ")
+        : typeof rawMsg === "string"
+        ? rawMsg
+        : "حدث خطأ أثناء معالجة الطلب.";
+
+      return {
+        success: false,
+        message: errorMessage,
+        data: (data.data ?? null) as unknown as T,
+        ...(data.meta ? { meta: data.meta as ApiResponse<T>["meta"] } : {}),
+      };
     }
-console.log("getttt",url,data)
-    return data;
+
+    return {
+      success: (data.success as boolean) ?? true,
+      message: (data.message as string) || "",
+      data: (data.data !== undefined ? data.data : data) as T,
+      ...(data.meta ? { meta: data.meta as ApiResponse<T>["meta"] } : {}),
+    };
   } catch (error) {
     console.error("Error during API request:", error);
     const errorMessage =
       "فشل الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.";
 
-
     return {
       success: false,
       message: errorMessage,
-      data: null as any,
+      data: null as unknown as T,
     };
   }
 };
+

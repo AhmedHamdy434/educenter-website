@@ -1,10 +1,8 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarCheck, GraduationCap, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useGroupQuery } from "@/features/groups/hooks/queries";
 import { AttendanceTab } from "@/features/groups/components/group-details/AttendanceTab";
 import { type GroupDetails } from "@/features/groups/types";

@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, Landmark, Loader2 } from "lucide-react";
+import { Landmark, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card } from "@/components/ui/card";
 import { useStudentPaymentsQuery } from "../hooks/queries";
