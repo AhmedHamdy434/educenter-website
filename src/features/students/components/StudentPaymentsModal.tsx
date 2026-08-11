@@ -54,7 +54,7 @@ export function StudentPaymentsModal({
                     <td className="p-3 font-mono text-slate-400 text-[10px]" dir="ltr">
                       {formatFullDate(payment.paidAt)}
                     </td>
-                    <td className="p-3 text-slate-400 truncate max-w-[120px]" title={payment.notes || ""}>
+                    <td className="p-3 text-slate-400 truncate max-w-30" title={payment.notes || ""}>
                       {payment.notes || "—"}
                     </td>
                   </tr>

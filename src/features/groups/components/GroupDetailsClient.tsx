@@ -30,7 +30,10 @@ export function GroupDetailsClient({
   userRole,
 }: GroupDetailsClientProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [paymentHistoryStudent, setPaymentHistoryStudent] = useState<{ id: string; name: string } | null>(null);
+  const [paymentHistoryStudent, setPaymentHistoryStudent] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   const isOwner = userRole === UserRole.OWNER;
   const isTeacher = userRole === UserRole.TEACHER;
@@ -75,7 +78,10 @@ export function GroupDetailsClient({
     });
   };
 
-  const handleAddStudents = async (studentIds: string[], subscriptionStartDate?: string) => {
+  const handleAddStudents = async (
+    studentIds: string[],
+    subscriptionStartDate?: string,
+  ) => {
     await addStudents(
       {
         id: group.id,
@@ -115,7 +121,7 @@ export function GroupDetailsClient({
                   "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
                   activeTab === "students"
                     ? "border-[#1E4632] text-[#1E4632]"
-                    : "border-transparent text-slate-400 hover:text-slate-600"
+                    : "border-transparent text-slate-400 hover:text-slate-600",
                 )}
               >
                 <Users className="size-4" />
@@ -128,7 +134,7 @@ export function GroupDetailsClient({
                   "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
                   activeTab === "attendance"
                     ? "border-[#1E4632] text-[#1E4632]"
-                    : "border-transparent text-slate-400 hover:text-slate-600"
+                    : "border-transparent text-slate-400 hover:text-slate-600",
                 )}
               >
                 <CalendarCheck2 className="size-4" />
@@ -141,7 +147,7 @@ export function GroupDetailsClient({
                   "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
                   activeTab === "reports"
                     ? "border-[#1E4632] text-[#1E4632]"
-                    : "border-transparent text-slate-400 hover:text-slate-600"
+                    : "border-transparent text-slate-400 hover:text-slate-600",
                 )}
               >
                 <TrendingUp className="size-4" />
@@ -155,7 +161,7 @@ export function GroupDetailsClient({
                     "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
                     activeTab === "payments"
                       ? "border-[#1E4632] text-[#1E4632]"
-                      : "border-transparent text-slate-400 hover:text-slate-600"
+                      : "border-transparent text-slate-400 hover:text-slate-600",
                   )}
                 >
                   <CreditCard className="size-4" />
@@ -166,7 +172,7 @@ export function GroupDetailsClient({
           )}
 
           {/* Active Tab Content */}
-          <div className="min-h-[400px]">
+          <div className="min-h-100">
             {(activeTab === "students" || isTeacher) && (
               <EnrolledStudentsList
                 students={group.students}
@@ -198,20 +204,22 @@ export function GroupDetailsClient({
 
         {/* Left 1 col: Sidebar Metadata */}
         <div>
-          <GroupInfoSidebar group={group} />
+          <GroupInfoSidebar group={group} isTeacher={isTeacher} />
         </div>
       </div>
 
       {/* Add Students Dialog Modal */}
-      <AddStudentsModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        gradeId={group.gradeId}
-        gradeName={group.grade.name}
-        enrolledStudentIds={enrolledStudentIds}
-        onAddStudents={handleAddStudents}
-        isAddPending={isAddPending}
-      />
+      {!isTeacher && (
+        <AddStudentsModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          gradeId={group.gradeId}
+          gradeName={group.grade.name}
+          enrolledStudentIds={enrolledStudentIds}
+          onAddStudents={handleAddStudents}
+          isAddPending={isAddPending}
+        />
+      )}
 
       {/* Student Payments History Modal */}
       {paymentHistoryStudent && (

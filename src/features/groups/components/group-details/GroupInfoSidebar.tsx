@@ -1,15 +1,23 @@
 "use client";
 
-import { BookOpen, GraduationCap, User, Phone, Mail, Calendar } from "lucide-react";
+import {
+  BookOpen,
+  GraduationCap,
+  User,
+  Phone,
+  Mail,
+  Calendar,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { type GroupDetails } from "../../types";
 import { DAY_NAMES_AR, formatTime } from "@/utils/time";
 
 interface GroupInfoSidebarProps {
   group: GroupDetails;
+  isTeacher: boolean;
 }
 
-export function GroupInfoSidebar({ group }: GroupInfoSidebarProps) {
+export function GroupInfoSidebar({ group, isTeacher }: GroupInfoSidebarProps) {
   return (
     <div className="space-y-6">
       {/* Card 1: Main Info */}
@@ -67,11 +75,13 @@ export function GroupInfoSidebar({ group }: GroupInfoSidebarProps) {
           <div className="flex items-center justify-between">
             <span className="text-slate-400">تاريخ بداية المجموعة</span>
             <span className="font-semibold text-slate-700 font-mono text-xs">
-              {group.startDate ? new Date(group.startDate).toLocaleDateString("ar-EG", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }) : "—"}
+              {group.startDate
+                ? new Date(group.startDate).toLocaleDateString("ar-EG", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "—"}
             </span>
           </div>
 
@@ -85,37 +95,39 @@ export function GroupInfoSidebar({ group }: GroupInfoSidebarProps) {
       </Card>
 
       {/* Card 2: Teacher Info */}
-      <Card className="p-6 space-y-4">
-        <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-1.5">
-          <User className="size-4 text-[#1E4632]" />
-          المعلم المسؤول
-        </h3>
+      {!isTeacher && (
+        <Card className="p-6 space-y-4">
+          <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-1.5">
+            <User className="size-4 text-[#1E4632]" />
+            المعلم المسؤول
+          </h3>
 
-        <div className="flex items-center gap-3">
-          <div className="size-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-base flex-shrink-0">
-            {group.teacher.user.fullName.substring(0, 2)}
+          <div className="flex items-center gap-3">
+            <div className="size-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-base flex-shrink-0">
+              {group.teacher.user.fullName.substring(0, 2)}
+            </div>
+            <div className="flex flex-col overflow-hidden">
+              <span className="font-bold text-slate-800 text-sm truncate">
+                {group.teacher.user.fullName}
+              </span>
+              <span className="text-xs text-slate-400 truncate">
+                {group.teacher.specialization || "معلم المادة"}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col overflow-hidden">
-            <span className="font-bold text-slate-800 text-sm truncate">
-              {group.teacher.user.fullName}
-            </span>
-            <span className="text-xs text-slate-400 truncate">
-              {group.teacher.specialization || "معلم المادة"}
-            </span>
-          </div>
-        </div>
 
-        <div className="space-y-2.5 text-slate-500 text-xs border-t border-slate-50 pt-3">
-          <div className="flex items-center gap-2">
-            <Phone className="size-3.5 text-slate-400" />
-            <span>{group.teacher.user.phone}</span>
+          <div className="space-y-2.5 text-slate-500 text-xs border-t border-slate-50 pt-3">
+            <div className="flex items-center gap-2">
+              <Phone className="size-3.5 text-slate-400" />
+              <span>{group.teacher.user.phone}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail className="size-3.5 text-slate-400" />
+              <span className="truncate">{group.teacher.user.email}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Mail className="size-3.5 text-slate-400" />
-            <span className="truncate">{group.teacher.user.email}</span>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       {/* Card 3: Schedules */}
       <Card className="p-6 space-y-4">
