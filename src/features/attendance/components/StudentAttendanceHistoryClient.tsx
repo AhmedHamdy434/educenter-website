@@ -177,7 +177,7 @@ export function StudentAttendanceHistoryClient({
           <div className="space-y-3 pt-2">
             <h2 className="text-base font-bold text-foreground flex items-center gap-2">
               <div className="size-7 rounded-md bg-secondary text-primary flex items-center justify-center">
-                <Calendar className="size-4 stroke-[2]" />
+                <Calendar className="size-4 stroke-2" />
               </div>
               <span>سجل الحصص التفصيلي ({filteredHistory.length})</span>
             </h2>

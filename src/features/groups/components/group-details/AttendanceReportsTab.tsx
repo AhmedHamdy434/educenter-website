@@ -80,7 +80,7 @@ export function AttendanceReportsTab({ groupId }: AttendanceReportsTabProps) {
         <Card className="p-6 space-y-4 border border-border bg-card rounded-xl shadow-none">
           <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
             <div className="size-7 rounded-md bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center">
-              <AlertTriangle className="size-4 stroke-[2]" />
+              <AlertTriangle className="size-4 stroke-2" />
             </div>
             <span>الطلاب الأكثر غياباً (تنبيه المتابعة)</span>
           </h3>
@@ -110,7 +110,7 @@ export function AttendanceReportsTab({ groupId }: AttendanceReportsTabProps) {
         <Card className="p-6 space-y-4 border border-border bg-card rounded-xl shadow-none">
           <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
             <div className="size-7 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center">
-              <Award className="size-4 stroke-[2]" />
+              <Award className="size-4 stroke-2" />
             </div>
             <span>طلاب ذوي حضور مثالي (كشف الشرف)</span>
           </h3>

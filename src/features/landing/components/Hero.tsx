@@ -79,13 +79,13 @@ export function Hero() {
               <div className="flex items-center gap-4 pt-4 border-t border-border mt-2">
                 <div className="flex -space-x-2 space-x-reverse overflow-hidden">
                   <div className="relative size-10 rounded-full border-2 border-card overflow-hidden bg-secondary">
-                    <Image src="/images/avatar-1.jpg" alt="User Avatar 1" fill sizes="40px" className="object-cover" />
+                    <Image src="/images/avatar-ahmed.png" alt="User Avatar 1" fill sizes="40px" className="object-cover" />
                   </div>
                   <div className="relative size-10 rounded-full border-2 border-card overflow-hidden bg-secondary">
-                    <Image src="/images/avatar-2.jpg" alt="User Avatar 2" fill sizes="40px" className="object-cover" />
+                    <Image src="/images/avatar-sara.png" alt="User Avatar 2" fill sizes="40px" className="object-cover" />
                   </div>
                   <div className="relative size-10 rounded-full border-2 border-card overflow-hidden bg-secondary">
-                    <Image src="/images/avatar-3.jpg" alt="User Avatar 3" fill sizes="40px" className="object-cover" />
+                    <Image src="/images/avatar-mohammed.png" alt="User Avatar 3" fill sizes="40px" className="object-cover" />
                   </div>
                 </div>
                 <div className="flex flex-col text-right">

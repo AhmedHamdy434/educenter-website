@@ -220,7 +220,7 @@ export function ContactUs() {
             className="lg:col-span-5 flex flex-col justify-between space-y-8"
           >
             {/* Visual Image container */}
-            <div className="relative hidden lg:block w-full aspect-16/10 lg:aspect-square rounded-2xl overflow-hidden shadow-none border border-border bg-card min-h-[250px] lg:min-h-[350px]">
+            <div className="relative hidden lg:block w-full aspect-16/10 lg:aspect-square rounded-2xl overflow-hidden shadow-none border border-border bg-card min-h-62.5 lg:min-h-87.5">
               <Image
                 src="/images/contact-illustration.png"
                 alt="تواصل معنا - EduCenter"

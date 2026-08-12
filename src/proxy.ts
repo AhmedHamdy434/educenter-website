@@ -30,6 +30,20 @@ export function proxy(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const { pathname } = request.nextUrl;
 
+  // Allow static assets, images, and metadata files without redirection
+  if (
+    pathname.startsWith("/images") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname === "/favicon.ico" ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml" ||
+    /\.(?:svg|png|jpg|jpeg|gif|webp|ico|json)$/.test(pathname)
+  ) {
+    return NextResponse.next();
+  }
+
   // 1. If user is NOT logged in
   if (!token) {
     // Only allow access to "/" (landing page) and "/login" (login page)
@@ -131,8 +145,8 @@ export const config = {
      * - api (API routes and server actions)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * - images, public files, metadata files
      */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|images|favicon.ico|manifest.webmanifest|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

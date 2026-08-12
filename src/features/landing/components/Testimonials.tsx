@@ -10,7 +10,7 @@ export function Testimonials() {
       content:
         "منصة EduCenter غيرت شكل الإدارة تماماً في المركز. كنا نضيع ساعات طويلة في كشوف الغياب والتحصيل اليدوي، والآن كل شيء يتم بضغطة زر واحدة وبدقة متناهية.",
       rating: 5,
-      avatar: "/images/avatar-1.jpg",
+      avatar: "/images/avatar-ahmed.png",
     },
     {
       name: "سارة عبد الرحمن",
@@ -18,7 +18,7 @@ export function Testimonials() {
       content:
         "أفضل ما في المنصة هو السهولة والتنظيم العالي. أستطيع تسجيل درجات الامتحانات الشهرية ومتابعة حضور كل طالب في مجموعاتي ومشاركة النتائج مع أولياء الأمور بسهولة.",
       rating: 5,
-      avatar: "/images/avatar-2.jpg",
+      avatar: "/images/avatar-sara.png",
     },
     {
       name: "محمد كمال",
@@ -26,7 +26,7 @@ export function Testimonials() {
       content:
         "التقارير المالية وإحصائيات الطلاب وفرت علينا مجهود محاسبي ضخم. خدمة العملاء والدعم الفني سريع جداً ومتعاون لأقصى درجة. أنصح كل صاحب مركز بتجربتها.",
       rating: 5,
-      avatar: "/images/avatar-3.jpg",
+      avatar: "/images/avatar-mohammed.png",
     },
   ];
 
