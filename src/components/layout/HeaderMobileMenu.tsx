@@ -25,7 +25,7 @@ export function HeaderMobileMenu({
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-label={isOpen ? "إغلاق القائمة" : "فتح القائمة"}
-          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-50 hover:text-[#1E4632] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632]"
+          className="inline-flex items-center justify-center rounded-lg p-2 text-foreground/80 hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
         >
           {isOpen ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
@@ -34,7 +34,7 @@ export function HeaderMobileMenu({
       {/* Mobile Drawer Menu */}
       {isOpen && (
         <nav
-          className="absolute top-20 right-0 left-0 md:hidden border-t border-slate-100 bg-white px-4 py-6 shadow-lg animate-in slide-in-from-top duration-200"
+          className="absolute top-20 right-0 left-0 md:hidden border-t border-border bg-card px-4 py-6 shadow-xl animate-in slide-in-from-top duration-200"
           aria-label="التنقل للهواتف"
         >
           <div className="flex flex-col gap-4">
@@ -46,22 +46,22 @@ export function HeaderMobileMenu({
                   setActiveItem(item.name);
                   setIsOpen(false);
                 }}
-                className={`py-2 text-[16px] font-medium transition-colors hover:text-[#1E4632] rounded-md border-r-2 pr-3 focus-visible:outline-none focus-visible:text-[#1E4632] focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2 ${
+                className={`py-2 text-[15px] font-semibold transition-colors rounded-md border-r-3 pr-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                   activeItem === item.name
-                    ? "text-[#1E4632] font-semibold border-[#1E4632]"
-                    : "text-slate-600 border-transparent"
+                    ? "text-primary font-bold border-primary bg-secondary/50"
+                    : "text-muted-foreground border-transparent hover:text-foreground hover:bg-muted"
                 }`}
                 aria-current={activeItem === item.name ? "page" : undefined}
               >
                 {item.name}
               </a>
             ))}
-            <hr className="my-2 border-slate-100" />
+            <hr className="my-2 border-border" />
             <div className="flex flex-col gap-3">
               <Button
                 asChild
-                variant="outline"
-                className="w-full h-11 border-[#1E4632]/20 text-[#1E4632] hover:bg-[#F0F7F4] font-medium text-base rounded-lg"
+                variant="brandOutline"
+                className="w-full h-11 font-semibold text-sm rounded-lg"
               >
                 <Link href="#pricing" onClick={() => setIsOpen(false)}>
                   جرب مجاناً
@@ -69,7 +69,8 @@ export function HeaderMobileMenu({
               </Button>
               <Button
                 asChild
-                className="w-full h-11 bg-[#1E4632] hover:bg-[#163625] text-white font-medium text-base rounded-lg"
+                variant="brand"
+                className="w-full h-11 font-bold text-sm rounded-lg shadow-none"
               >
                 <Link
                   href={isAuthenticated ? "/dashboard" : "/login"}

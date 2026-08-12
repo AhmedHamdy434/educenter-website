@@ -53,11 +53,11 @@ export function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
             type="button"
             variant="outline"
             className={cn(
-              "w-full h-11 px-4 py-3 rounded-xl border bg-white text-slate-800 text-sm font-medium outline-none transition-all text-right flex items-center justify-between shadow-none",
+              "w-full h-11 px-4 py-3 rounded-xl border border-input bg-card text-foreground text-sm font-medium outline-none transition-all text-right flex items-center justify-between shadow-none",
               error
-                ? "border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500/5"
-                : "border-slate-200 focus:border-[#1e4632] focus:ring-1 focus:ring-[#1e4632]/5",
-              !currentValue && "text-slate-400",
+                ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/10"
+                : "focus:border-primary focus:ring-1 focus:ring-primary/10",
+              !currentValue && "text-muted-foreground",
               className
             )}
           >
@@ -66,10 +66,10 @@ export function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
                 ? format(selectedDate!, "PPP", { locale: ar })
                 : placeholder}
             </span>
-            <CalendarIcon className="size-4 text-slate-400 shrink-0" />
+            <CalendarIcon className="size-4 text-muted-foreground shrink-0" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 border border-border bg-card shadow-lg" align="start">
           <Calendar
             mode="single"
             selected={selectedDate}
@@ -93,9 +93,9 @@ export function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
   return (
     <div className="space-y-2 w-full text-right" dir="rtl">
       {label && (
-        <Label className="text-xs font-semibold text-slate-600 block text-right select-none">
+        <Label className="text-xs font-semibold text-muted-foreground block text-right select-none">
           {label}
-          {required && <span className="text-red-500 mr-1 select-none">*</span>}
+          {required && <span className="text-destructive mr-1 select-none">*</span>}
         </Label>
       )}
       {control && name ? (
@@ -108,7 +108,7 @@ export function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
         renderDatePicker(value || "", onChange!)
       )}
       {error && (
-        <p className="text-xs text-red-500 font-semibold text-right">{error}</p>
+        <p className="text-xs text-destructive font-semibold text-right">{error}</p>
       )}
     </div>
   );

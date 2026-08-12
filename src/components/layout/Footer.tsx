@@ -18,50 +18,53 @@ const Instagram = ({ className }: { className?: string }) => (
 
 export function Footer() {
   return (
-    <footer className="w-full bg-slate-50 border-t border-slate-100 pt-16 pb-8">
+    <footer className="w-full bg-secondary/30 border-t border-border pt-16 pb-12" dir="rtl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          {/* Column 1: Brand Info */}
-          <div className="md:col-span-2 flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1E4632] text-white shadow-sm">
-                <GraduationCap className="size-6" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12">
+          {/* Column 1: Brand details */}
+          <div className="lg:col-span-2 flex flex-col gap-4">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-primary hover:opacity-90 transition-opacity"
+            >
+              <div className="flex size-10 items-center justify-center rounded-xl bg-secondary text-primary border border-border">
+                <GraduationCap className="size-6 stroke-[2.5]" />
               </div>
-              <span className="font-sans text-xl font-bold tracking-tight text-[#1E4632]">
+              <span className="font-extrabold text-xl tracking-tight text-foreground">
                 EduCenter
               </span>
-            </div>
-            <p className="text-slate-600 text-sm max-w-sm leading-relaxed">
-              منصة متكاملة لإدارة مراكز التعليم وتحسين العملية التعليمية، نهدف لمساعدتك في قيادة مركزك التعليمي نحو النجاح والتميز بأحدث التقنيات.
+            </Link>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+              المنصة المتكاملة الرائدة في إدارة السناتر التعليمية والمجموعات الدراسية. نساعدك على تنظيم عملك، متابعة طلابك، وتنمية أعمالك بكفاءة وسهولة.
             </p>
           </div>
 
-          {/* Column 2: Quick Links */}
+          {/* Column 2: Platform Links */}
           <div className="flex flex-col gap-4">
-            <h3 className="font-semibold text-slate-800 text-base">روابط سريعة</h3>
+            <h3 className="font-bold text-foreground text-sm">المنصة</h3>
             <ul className="flex flex-col gap-2.5">
               <li>
-                <a href="#hero" className="text-sm text-slate-600 hover:text-[#1E4632] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2 rounded-sm">
+                <a href="#hero" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                   الرئيسية
                 </a>
               </li>
               <li>
-                <a href="#features" className="text-sm text-slate-600 hover:text-[#1E4632] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2 rounded-sm">
+                <a href="#features" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                   المميزات
                 </a>
               </li>
               <li>
-                <a href="#pricing" className="text-sm text-slate-600 hover:text-[#1E4632] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2 rounded-sm">
-                  الباقات
+                <a href="#pricing" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
+                  باقات الاشتراك
                 </a>
               </li>
               <li>
-                <a href="#faq" className="text-sm text-slate-600 hover:text-[#1E4632] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2 rounded-sm">
-                  الأسئلة الشائعة
+                <a href="#testimonials" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
+                  آراء العملاء
                 </a>
               </li>
               <li>
-                <a href="#contact" className="text-sm text-slate-600 hover:text-[#1E4632] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2 rounded-sm">
+                <a href="#contact" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                   تواصل معنا
                 </a>
               </li>
@@ -70,20 +73,20 @@ export function Footer() {
 
           {/* Column 3: Support */}
           <div className="flex flex-col gap-4">
-            <h3 className="font-semibold text-slate-800 text-base">الدعم الفني</h3>
+            <h3 className="font-bold text-foreground text-sm">الدعم الفني</h3>
             <ul className="flex flex-col gap-2.5">
               <li>
-                <Link href="#" className="text-sm text-slate-500 hover:text-[#1E4632] transition-colors">
+                <Link href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                   مركز المساعدة
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-sm text-slate-500 hover:text-[#1E4632] transition-colors">
+                <Link href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                   سياسة الخصوصية
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-sm text-slate-500 hover:text-[#1E4632] transition-colors">
+                <Link href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors font-medium">
                   شروط الاستخدام
                 </Link>
               </li>
@@ -92,8 +95,8 @@ export function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-slate-200/60 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-600">
+        <div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground font-medium">
             © {new Date().getFullYear()} EduCenter. جميع الحقوق محفوظة.
           </p>
 
@@ -104,7 +107,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="قناة يوتيوب"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E4632] text-white hover:bg-[#163625] transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105"
             >
               <Youtube className="size-4" />
             </a>
@@ -113,7 +116,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="حساب إكس (تويتر سابقاً)"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E4632] text-white hover:bg-[#163625] transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105"
             >
               <Send className="size-4 rotate-135" aria-hidden="true" />
             </a>
@@ -122,7 +125,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="حساب إنستغرام"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E4632] text-white hover:bg-[#163625] transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105"
             >
               <Instagram className="size-4" />
             </a>
@@ -131,7 +134,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="تواصل عبر واتساب"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E4632] text-white hover:bg-[#163625] transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632] focus-visible:ring-offset-2"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105"
             >
               <MessageCircle className="size-4" aria-hidden="true" />
             </a>
@@ -141,4 +144,3 @@ export function Footer() {
     </footer>
   );
 }
-

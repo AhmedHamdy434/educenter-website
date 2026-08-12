@@ -21,136 +21,123 @@ export function GroupInfoSidebar({ group, isTeacher }: GroupInfoSidebarProps) {
   return (
     <div className="space-y-6">
       {/* Card 1: Main Info */}
-      <Card className="p-6 space-y-4">
-        <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-1.5">
-          <BookOpen className="size-4 text-[#1E4632]" />
-          بيانات المجموعة الأساسية
+      <Card className="p-6 border border-border bg-card shadow-none space-y-4 rounded-xl">
+        <h3 className="font-bold text-foreground text-sm border-b border-border pb-3 flex items-center gap-2">
+          <BookOpen className="size-4 text-primary" />
+          <span>بيانات المجموعة الأساسية</span>
         </h3>
 
-        <div className="space-y-3.5 text-slate-600 text-sm">
+        <div className="space-y-3 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">الصف الدراسي</span>
-            <span className="font-semibold text-slate-700 flex items-center gap-1">
-              <GraduationCap className="size-4 text-slate-400" />
+            <span className="text-muted-foreground font-medium">المرحلة الدراسية:</span>
+            <span className="font-bold text-foreground flex items-center gap-1">
+              <GraduationCap className="size-3.5 text-muted-foreground" />
               {group.grade.name}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">المادة الدراسية</span>
-            <span className="font-semibold text-slate-700">
-              {group.subject.name}
+            <span className="text-muted-foreground font-medium">المادة الدراسية:</span>
+            <span className="font-bold text-foreground">{group.subject.name}</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground font-medium">الطلاب المسجلون:</span>
+            <span className="font-bold text-foreground">
+              {group.students.length} {group.capacity ? `من أصل ${group.capacity}` : "طالب"}
             </span>
           </div>
 
-          <div className="flex items-center justify-between border-t border-slate-50 pt-3">
-            <span className="text-slate-400">السعة الاستيعابية</span>
-            <span className="font-semibold text-slate-700">
-              {group.capacity ? `${group.capacity} طالب` : "غير محدودة (∞)"}
-            </span>
-          </div>
+          {!isTeacher && (
+            <>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground font-medium">سعر الاشتراك الشهري:</span>
+                <span className="font-bold text-primary bg-secondary px-2.5 py-1 rounded-md text-xs border border-border">
+                  {group.monthlyFee} ج.م
+                </span>
+              </div>
 
-          {group.capacity && (
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">المقاعد المتبقية</span>
-              <span
-                className={`font-semibold ${
-                  group.capacity - group.students.length <= 0
-                    ? "text-red-500 font-bold"
-                    : "text-slate-700"
-                }`}
-              >
-                {Math.max(0, group.capacity - group.students.length)} مقعد
-              </span>
-            </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground font-medium">تاريخ البداية:</span>
+                <span className="font-bold text-foreground">
+                  {group.startDate
+                    ? new Date(group.startDate).toLocaleDateString("ar-EG")
+                    : "غير محدد"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground font-medium">مدة المجموعة:</span>
+                <span className="font-bold text-foreground">{group.monthsCount} شهور</span>
+              </div>
+            </>
           )}
-
-          <div className="flex items-center justify-between border-t border-slate-50 pt-3">
-            <span className="text-slate-400">سعر الاشتراك الشهري</span>
-            <span className="font-semibold text-[#1E4632] bg-[#F0F7F4] px-2.5 py-1 rounded-full text-xs border border-[#1E4632]/10">
-              {group.monthlyFee ? `${group.monthlyFee} ج.م` : "مجاني"}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400">تاريخ بداية المجموعة</span>
-            <span className="font-semibold text-slate-700 font-mono text-xs">
-              {group.startDate
-                ? new Date(group.startDate).toLocaleDateString("ar-EG", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
-                : "—"}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400">مدة المجموعة</span>
-            <span className="font-semibold text-slate-700">
-              {group.monthsCount ? `${group.monthsCount} أشهر` : "—"}
-            </span>
-          </div>
         </div>
       </Card>
 
-      {/* Card 2: Teacher Info */}
-      {!isTeacher && (
-        <Card className="p-6 space-y-4">
-          <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-1.5">
-            <User className="size-4 text-[#1E4632]" />
-            المعلم المسؤول
+      {/* Card 2: Teacher Contact Info */}
+      {!isTeacher && group.teacher && (
+        <Card className="p-6 border border-border bg-card shadow-none space-y-4 rounded-xl">
+          <h3 className="font-bold text-foreground text-sm border-b border-border pb-3 flex items-center gap-2">
+            <User className="size-4 text-primary" />
+            <span>المعلم المسؤول</span>
           </h3>
 
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-base flex-shrink-0">
-              {group.teacher.user.fullName.substring(0, 2)}
+            <div className="size-10 rounded-full bg-secondary text-primary border border-border flex items-center justify-center font-bold text-sm">
+              {group.teacher.user.fullName.charAt(0)}
             </div>
             <div className="flex flex-col overflow-hidden">
-              <span className="font-bold text-slate-800 text-sm truncate">
+              <span className="font-bold text-foreground text-sm truncate">
                 {group.teacher.user.fullName}
               </span>
-              <span className="text-xs text-slate-400 truncate">
+              <span className="text-xs text-muted-foreground truncate">
                 {group.teacher.specialization || "معلم المادة"}
               </span>
             </div>
           </div>
 
-          <div className="space-y-2.5 text-slate-500 text-xs border-t border-slate-50 pt-3">
+          <div className="space-y-2 pt-2 border-t border-border text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Phone className="size-3.5 text-slate-400" />
+              <Phone className="size-3.5 text-muted-foreground/70" />
               <span>{group.teacher.user.phone}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Mail className="size-3.5 text-slate-400" />
-              <span className="truncate">{group.teacher.user.email}</span>
-            </div>
+            {group.teacher.user.email && (
+              <div className="flex items-center gap-2 truncate">
+                <Mail className="size-3.5 text-muted-foreground/70" />
+                <span className="truncate">{group.teacher.user.email}</span>
+              </div>
+            )}
           </div>
         </Card>
       )}
 
       {/* Card 3: Schedules */}
-      <Card className="p-6 space-y-4">
-        <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-1.5">
-          <Calendar className="size-4 text-[#1E4632]" />
-          جدول المواعيد الأسبوعي
+      <Card className="p-6 border border-border bg-card shadow-none space-y-4 rounded-xl">
+        <h3 className="font-bold text-foreground text-sm border-b border-border pb-3 flex items-center gap-2">
+          <Calendar className="size-4 text-primary" />
+          <span>مواعيد الحصص الأسبوعية</span>
         </h3>
 
         {group.schedule && group.schedule.length > 0 ? (
           <div className="space-y-2">
-            {group.schedule.map((item, index) => (
+            {group.schedule.map((item, idx) => (
               <div
-                key={item.id || index}
-                className="flex items-center justify-between p-2.5 rounded-xl border border-slate-100 bg-slate-50/30 text-xs font-semibold text-slate-700"
+                key={item.id || idx}
+                className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/50 border border-border text-xs"
               >
-                <span>{DAY_NAMES_AR[item.day]}</span>
-                <span>{formatTime(item.hour, item.minute)}</span>
+                <span className="font-bold text-foreground">
+                  {DAY_NAMES_AR[item.day]}
+                </span>
+                <span className="font-bold text-primary bg-card px-2 py-0.5 rounded border border-border">
+                  {formatTime(item.hour, item.minute)}
+                </span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-xs text-slate-400 text-center py-4">
-            لا توجد مواعيد محددة لهذه المجموعة بعد.
+          <p className="text-xs text-muted-foreground italic text-center py-2">
+            لا توجد مواعيد محددة لهذه المجموعة.
           </p>
         )}
       </Card>

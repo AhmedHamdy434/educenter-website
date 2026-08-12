@@ -108,8 +108,8 @@ export function AddStudentsModal({
       title="إدراج طلاب في المجموعة الدراسية"
     >
       <div className="space-y-4 text-right" dir="rtl">
-        <p className="text-xs text-slate-500">
-          يتم عرض الطلاب النشطين المسجلين في مرحلة **{gradeName}** والذين لم يتم تسجيلهم في هذه المجموعة بعد.
+        <p className="text-xs text-muted-foreground">
+          يتم عرض الطلاب النشطين المسجلين في مرحلة <strong className="text-foreground">{gradeName}</strong> والذين لم يتم تسجيلهم في هذه المجموعة بعد.
         </p>
 
         <div className="w-full">
@@ -134,11 +134,11 @@ export function AddStudentsModal({
 
         {/* Candidates list content */}
         {isCandidatesLoading ? (
-          <Loading message="جاري تحميل قائمة الطلاب..." className="py-12" />
+          <Loading message="جاري تحميل قائمة الطلاب..." />
         ) : filteredCandidates.length > 0 ? (
           <div className="space-y-3">
             {/* Select All checkbox bar */}
-            <div className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 text-xs font-bold text-slate-700">
+            <div className="flex items-center justify-between bg-secondary/50 px-3 py-2 rounded-lg border border-border text-xs font-bold text-foreground">
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -148,7 +148,7 @@ export function AddStudentsModal({
                     filteredCandidates.length > 0
                   }
                   onChange={toggleSelectAllCandidates}
-                  className="size-4 rounded border-slate-300 text-[#1E4632] focus:ring-[#1E4632] accent-[#1E4632] cursor-pointer"
+                  className="size-4 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer"
                 />
                 <label htmlFor="select-all" className="cursor-pointer select-none">
                   تحديد الكل ({filteredCandidates.length})
@@ -158,32 +158,32 @@ export function AddStudentsModal({
             </div>
 
             {/* Scrollable list */}
-            <div className="max-h-60 overflow-y-auto border border-slate-100 rounded-xl divide-y divide-slate-100 pr-1 -mr-1">
+            <div className="max-h-60 overflow-y-auto border border-border rounded-xl divide-y divide-border pr-1 -mr-1">
               {filteredCandidates.map((c) => (
                 <div
                   key={c.id}
                   onClick={() => toggleSelectStudent(c.id)}
-                  className="flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-3 p-3 hover:bg-muted/40 transition-colors cursor-pointer"
                 >
                   <input
                     type="checkbox"
                     checked={selectedStudentIds.includes(c.id)}
-                    onChange={() => {}} // Click is handled by parent div
-                    className="size-4 rounded border-slate-300 text-[#1E4632] focus:ring-[#1E4632] accent-[#1E4632] cursor-pointer shrink-0"
+                    onChange={() => {}}
+                    className="size-4 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer shrink-0"
                   />
                   <div className="flex flex-col text-sm flex-1">
-                    <span className="font-bold text-slate-800">{c.user.fullName}</span>
-                    <span className="text-xs text-slate-400">{c.user.phone}</span>
+                    <span className="font-bold text-foreground">{c.user.fullName}</span>
+                    <span className="text-xs text-muted-foreground font-mono">{c.user.phone}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         ) : (
-          <div className="text-center py-8 text-slate-400 bg-slate-50/50 border border-slate-100 rounded-xl">
-            <Users className="size-10 mx-auto text-slate-300 mb-2" />
-            <p className="font-semibold text-slate-500 text-xs">لا يوجد طلاب متاحين</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-center py-8 text-muted-foreground bg-secondary/20 border border-border rounded-xl">
+            <Users className="size-10 mx-auto text-muted-foreground/30 mb-2" />
+            <p className="font-bold text-foreground text-xs">لا يوجد طلاب متاحين</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {modalSearch
                 ? "لا يوجد نتائج مطابقة للبحث."
                 : "جميع طلاب هذا الصف مسجلون بالفعل في هذه المجموعة."}
@@ -192,12 +192,12 @@ export function AddStudentsModal({
         )}
 
         {/* Action buttons */}
-        <div className="flex gap-3 justify-end border-t border-slate-100 pt-4 mt-2">
+        <div className="flex gap-3 justify-end border-t border-border pt-4 mt-2">
           <Button
             type="button"
             variant="outline"
             onClick={handleClose}
-            className="h-10 px-5 rounded-xl text-slate-600"
+            className="h-10 px-5 rounded-lg border-border text-foreground hover:bg-muted font-medium"
           >
             إلغاء
           </Button>
@@ -206,7 +206,7 @@ export function AddStudentsModal({
             variant="brand"
             onClick={handleSave}
             disabled={selectedStudentIds.length === 0 || isAddPending}
-            className="h-10 px-6 rounded-xl flex items-center gap-2"
+            className="h-10 px-6 rounded-lg flex items-center gap-2 font-bold shadow-none"
           >
             {isAddPending ? (
               <>

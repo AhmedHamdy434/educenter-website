@@ -5,22 +5,22 @@ import { AttendanceStatus, type StudentAttendanceHistoryItem } from "../types";
 const STATUS_CONFIG = {
   [AttendanceStatus.PRESENT]: {
     label: "حاضر",
-    className: "bg-green-50 text-green-700 border-green-200",
+    className: "bg-emerald-50/80 text-emerald-800 border-emerald-300/80",
     icon: CheckCircle,
   },
   [AttendanceStatus.ABSENT]: {
     label: "غائب",
-    className: "bg-red-50 text-red-700 border-red-200",
+    className: "bg-rose-50/80 text-rose-800 border-rose-300/80",
     icon: XCircle,
   },
   [AttendanceStatus.LATE]: {
     label: "متأخر",
-    className: "bg-amber-50 text-amber-700 border-amber-200",
+    className: "bg-amber-50/80 text-amber-900 border-amber-300/80",
     icon: Clock,
   },
   [AttendanceStatus.EXCUSED]: {
     label: "مستأذن",
-    className: "bg-slate-50 text-slate-700 border-slate-200",
+    className: "bg-stone-100/80 text-stone-700 border-stone-300/80",
     icon: AlertCircle,
   },
 };
@@ -31,7 +31,7 @@ export function getStudentAttendanceColumns() {
       accessorKey: "date",
       header: "تاريخ الحصة",
       cell: ({ row }: { row: { original: StudentAttendanceHistoryItem } }) => (
-        <span className="font-semibold text-slate-800">
+        <span className="font-bold text-foreground">
           {new Date(row.original.date).toLocaleDateString("ar-EG", {
             weekday: "long",
             year: "numeric",
@@ -45,7 +45,7 @@ export function getStudentAttendanceColumns() {
       accessorKey: "groupName",
       header: "المجموعة الدراسية",
       cell: ({ row }: { row: { original: StudentAttendanceHistoryItem } }) => (
-        <span className="font-medium text-slate-700">
+        <span className="font-medium text-foreground/90">
           {row.original.groupName}
         </span>
       ),
@@ -56,13 +56,13 @@ export function getStudentAttendanceColumns() {
       cell: ({ row }: { row: { original: StudentAttendanceHistoryItem } }) => {
         const cfg = STATUS_CONFIG[row.original.status] || {
           label: row.original.status,
-          className: "bg-slate-50 text-slate-500",
+          className: "bg-stone-100/80 text-stone-700 border-stone-300/80",
           icon: HelpCircleIcon,
         };
         const IconComponent = cfg.icon;
         return (
           <span
-            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${cfg.className}`}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border ${cfg.className}`}
           >
             <IconComponent className="size-3.5" />
             <span>{cfg.label}</span>
@@ -74,9 +74,9 @@ export function getStudentAttendanceColumns() {
       accessorKey: "absenceReason",
       header: "ملاحظات / عذر الغياب",
       cell: ({ row }: { row: { original: StudentAttendanceHistoryItem } }) => (
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-muted-foreground">
           {row.original.absenceReason || (
-            <span className="text-slate-300 italic">لا توجد ملاحظات</span>
+            <span className="text-muted-foreground/40 italic">لا توجد ملاحظات</span>
           )}
         </span>
       ),

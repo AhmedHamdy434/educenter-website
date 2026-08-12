@@ -18,7 +18,7 @@ export function getGradeColumns({
       accessorKey: "order",
       header: "الترتيب",
       cell: ({ row }: { row: { original: Grade } }) => (
-        <span className="inline-flex items-center justify-center rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600 border border-slate-100">
+        <span className="inline-flex items-center justify-center rounded-md bg-secondary px-2.5 py-1 text-xs font-bold text-muted-foreground border border-border">
           {row.original.order}
         </span>
       ),
@@ -27,7 +27,7 @@ export function getGradeColumns({
       accessorKey: "name",
       header: "اسم المرحلة الدراسية",
       cell: ({ row }: { row: { original: Grade } }) => (
-        <span className="font-semibold text-slate-800">
+        <span className="font-bold text-foreground">
           {row.original.name}
         </span>
       ),
@@ -37,7 +37,7 @@ export function getGradeColumns({
       header: "الوصف",
       cell: ({ row }: { row: { original: Grade } }) => (
         <span
-          className="text-slate-500 max-w-xs truncate block"
+          className="text-muted-foreground max-w-xs truncate block text-xs"
           title={row.original.description || ""}
         >
           {row.original.description || "لا يوجد وصف"}
@@ -64,7 +64,7 @@ export function getGradeColumns({
           onClick={() => onEdit(row.original)}
           variant="brandOutline"
           size="sm"
-          className="h-8 rounded-lg text-[#1E4632] border-[#1E4632]/20 hover:bg-[#F0F7F4]"
+          className="h-8 rounded-lg font-semibold"
         >
           تعديل
         </Button>

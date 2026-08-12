@@ -18,7 +18,10 @@ export function FormInput({
   return (
     <div className="space-y-2 w-full">
       {label && (
-        <Label htmlFor={id} className="text-xs font-semibold text-slate-600 block">
+        <Label
+          htmlFor={id}
+          className="text-xs font-semibold text-muted-foreground block text-right"
+        >
           {label}
         </Label>
       )}
@@ -26,16 +29,18 @@ export function FormInput({
         id={id}
         aria-invalid={!!error}
         className={cn(
-          "w-full h-11 px-4 py-3 rounded-xl border bg-transparent text-slate-800 text-sm font-medium outline-none transition-all",
+          "w-full h-11 px-4 py-3 rounded-xl border border-input bg-card text-foreground text-sm font-medium outline-none transition-all",
           error
-            ? "border-red-300 focus-visible:border-red-500 focus-visible:ring-red-500/5"
-            : "border-slate-200 focus-visible:border-[#1e4632] focus-visible:ring-[#1e4632]/5",
+            ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/10"
+            : "focus-visible:border-primary focus-visible:ring-primary/10",
           className
         )}
         {...props}
       />
       {error && (
-        <p className="text-xs text-red-500 font-semibold text-right">{error}</p>
+        <p className="text-xs text-destructive font-semibold text-right">
+          {error}
+        </p>
       )}
     </div>
   );

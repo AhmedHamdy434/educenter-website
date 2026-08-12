@@ -2,13 +2,13 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "EduCenter",
+    name: "EduCenter | منصة إدارة المراكز التعليمية",
     short_name: "EduCenter",
-    description: "منصة شاملة تساعدك على إدارة طلابك، معلميك، الدروس، الاختبارات، والتقارير في مكان واحد بكل سهولة واحترافية.",
+    description: "نظام شامل ومتكامل لإدارة السناتر والمراكز التعليمية والدروس الخصوصية.",
     start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#1E4632",
+    background_color: "#FAF6EC",
+    theme_color: "#18362E",
     icons: [
       {
         src: "/favicon.ico",

@@ -1,18 +1,16 @@
-import React from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LoadingProps {
   message?: string;
   className?: string;
-  spinnerClassName?: string;
 }
 
-export function Loading({ message = "جاري التحميل...", className, spinnerClassName }: LoadingProps) {
+export function Loading({ message = "جاري التحميل...", className }: LoadingProps) {
   return (
-    <div className={cn("flex flex-col items-center justify-center py-20 text-slate-400 gap-2", className)}>
-      <Loader2 className={cn("size-8 animate-spin text-[#1E4632]", spinnerClassName)} />
-      <span className="text-sm font-semibold">{message}</span>
+    <div className={cn("flex flex-col items-center justify-center p-8 text-center", className)}>
+      <Loader2 className="size-8 animate-spin text-primary mb-2" />
+      <p className="text-sm font-semibold text-muted-foreground">{message}</p>
     </div>
   );
 }

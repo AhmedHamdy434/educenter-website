@@ -43,16 +43,17 @@ export function SharedTable<TData>({
   return (
     <div className="space-y-4 text-right" dir="rtl">
       {/* Table Container */}
-      <div className="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-none">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-right text-sm">
-            <thead className="bg-slate-50 border-b border-slate-100 text-slate-600 font-semibold">
+            {/* Table Header: Pure background contrast without noisy borders */}
+            <thead className="bg-secondary/70 text-foreground text-xs">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-6 py-4 font-semibold text-slate-700"
+                      className="px-5 py-3 font-bold text-foreground"
                     >
                       {header.isPlaceholder
                         ? null
@@ -65,14 +66,14 @@ export function SharedTable<TData>({
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
+            <tbody className="divide-y divide-border/60 text-foreground">
               {isLoading ? (
                 // Skeleton Rows
                 Array.from({ length: limit }).map((_, rowIndex) => (
                   <tr key={rowIndex} className="animate-pulse">
                     {columns.map((_, colIndex) => (
-                      <td key={colIndex} className="px-6 py-4">
-                        <div className="h-4 rounded bg-slate-100 w-3/4" />
+                      <td key={colIndex} className="px-5 py-3">
+                        <div className="h-4 rounded bg-muted/70 w-3/4" />
                       </td>
                     ))}
                   </tr>
@@ -82,20 +83,20 @@ export function SharedTable<TData>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="px-6 py-12 text-center text-slate-400 font-medium"
+                    className="px-5 py-12 text-center text-muted-foreground font-medium text-xs"
                   >
                     {emptyMessage}
                   </td>
                 </tr>
               ) : (
-                // Rendered Rows
+                // Rendered Rows with crisp scanning density
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-slate-50/50 transition-colors"
+                    className="hover:bg-muted/30 transition-colors"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-6 py-4 font-medium">
+                      <td key={cell.id} className="px-5 py-3 font-medium text-xs">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

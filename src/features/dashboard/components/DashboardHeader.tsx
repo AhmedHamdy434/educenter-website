@@ -16,14 +16,14 @@ const roleTranslations: Record<UserRole, string> = {
 
 export function DashboardHeader({ user, onMenuToggle }: DashboardHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 flex h-20 w-full items-center justify-between border-b border-slate-100 bg-white/95 px-6 shadow-sm backdrop-blur-md">
+    <header className="sticky top-0 z-40 flex h-20 w-full items-center justify-between border-b border-border bg-card/90 px-6 backdrop-blur-md">
       {/* Right Side: Menu Toggle (Mobile only) & Search (Optional) */}
       <div className="flex flex-1 items-center gap-4">
         {/* Toggle Button */}
         <button
           onClick={onMenuToggle}
           aria-label="افتح القائمة الجانبية"
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632]"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/75 hover:bg-muted md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Menu className="size-5" />
         </button>
@@ -34,13 +34,13 @@ export function DashboardHeader({ user, onMenuToggle }: DashboardHeaderProps) {
             البحث في النظام
           </label>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <Search className="size-4 text-slate-400" />
+            <Search className="size-4 text-muted-foreground" />
           </div>
           <input
             id="search-input"
             type="text"
             placeholder="ابحث عن الطلاب، المجموعات..."
-            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50/50 pr-10 pl-4 text-sm text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:border-[#1E4632] focus:bg-white focus:ring-1 focus:ring-[#1E4632] focus-visible:outline-none"
+            className="h-10 w-full rounded-lg border border-border bg-muted/40 pr-10 pl-4 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-primary focus:bg-card focus:ring-1 focus:ring-primary focus-visible:outline-none"
           />
         </div>
       </div>
@@ -50,28 +50,28 @@ export function DashboardHeader({ user, onMenuToggle }: DashboardHeaderProps) {
         {/* Notifications Button */}
         <button
           aria-label="التنبيهات"
-          className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4632]"
+          className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground/75 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Bell className="size-5" />
           <span className="absolute top-1.5 left-1.5 flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent"></span>
           </span>
         </button>
 
         {/* Vertical Divider */}
-        <div className="h-6 w-px bg-slate-200" />
+        <div className="h-6 w-px bg-border" />
 
         {/* User profile dropdown trigger/avatar */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-[#1E4632] border border-slate-200 font-semibold shadow-inner">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-primary border border-border font-bold">
             <UserIcon className="size-5" />
           </div>
           <div className="hidden flex-col items-start md:flex text-right">
-            <span className="text-sm font-semibold text-slate-800">
+            <span className="text-sm font-bold text-foreground">
               {user.name || "مستخدم"}
             </span>
-            <span className="text-[10px] text-slate-500 font-medium -mt-1">
+            <span className="text-[10px] text-muted-foreground font-semibold -mt-0.5">
               {user.role ? roleTranslations[user.role] : "صلاحية غير معروفة"}
             </span>
           </div>

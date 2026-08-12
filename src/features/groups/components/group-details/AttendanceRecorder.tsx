@@ -81,10 +81,10 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
   return (
     <div className="space-y-6 text-right animate-fade-in" dir="rtl">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+      <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
         <div className="space-y-1">
-          <h2 className="text-lg font-bold text-slate-800">تسجيل حضور حصة اليوم</h2>
-          <p className="text-xs text-slate-400">
+          <h2 className="text-lg font-bold text-foreground">تسجيل حضور حصة اليوم</h2>
+          <p className="text-xs text-muted-foreground">
             التاريخ: {sessionData ? new Date(sessionData.date).toLocaleDateString("ar-EG", {
               weekday: "long",
               year: "numeric",
@@ -97,7 +97,7 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
         <Button
           onClick={onBack}
           variant="outline"
-          className="h-9 px-4 rounded-xl flex items-center gap-2 text-slate-600 hover:text-slate-800"
+          className="h-9 px-4 rounded-lg flex items-center gap-2 border-border text-foreground hover:bg-muted font-medium"
         >
           <ArrowRight className="size-4" />
           <span>رجوع للسجل</span>
@@ -107,7 +107,7 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
       {/* Student List cards */}
       {studentList.length > 0 ? (
         <div className="space-y-4">
-          <div className="hidden lg:grid grid-cols-12 gap-4 px-6 text-xs font-bold text-slate-400 border-b border-slate-100 pb-2">
+          <div className="hidden lg:grid grid-cols-12 gap-4 px-6 text-xs font-bold text-muted-foreground border-b border-border pb-2">
             <span className="col-span-4">اسم الطالب</span>
             <span className="col-span-5 text-center">حالة الحضور والغياب</span>
             <span className="col-span-3">ملاحظات / سبب الغياب</span>
@@ -123,29 +123,30 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
               return (
                 <Card
                   key={student.studentId}
-                  className="p-4 lg:py-3.5 lg:px-6 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center border border-slate-100 hover:border-slate-200 transition-colors shadow-sm"
+                  className="p-4 lg:py-3.5 lg:px-6 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center border border-border bg-card hover:border-primary/40 transition-colors shadow-none rounded-xl"
                 >
                   {/* Name and Info */}
                   <div className="col-span-1 lg:col-span-4 flex items-center gap-3">
-                    <div className="size-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-sm shrink-0">
+                    <div className="size-9 rounded-full bg-secondary text-primary border border-border flex items-center justify-center font-bold text-xs shrink-0">
                       {student.fullName.substring(0, 2)}
                     </div>
                     <div className="flex flex-col overflow-hidden">
-                      <span className="font-bold text-slate-800 text-sm truncate">{student.fullName}</span>
-                      <span className="text-[10px] text-slate-400">{student.phone}</span>
+                      <span className="font-bold text-foreground text-sm truncate">{student.fullName}</span>
+                      <span className="text-[10px] text-muted-foreground font-mono" dir="ltr">{student.phone}</span>
                     </div>
                   </div>
 
-                  {/* Segmented Status Selector */}
+                  {/* Segmented Status Selector with Outlined Badges */}
                   <div className="col-span-1 lg:col-span-5 flex justify-center">
-                    <div className="grid grid-cols-4 gap-1 bg-slate-100/80 p-1 rounded-xl w-full max-w-md">
+                    <div className="grid grid-cols-4 gap-1 bg-secondary/50 border border-border p-1 rounded-xl w-full max-w-md">
                       {/* PRESENT */}
                       <button
+                        type="button"
                         onClick={() => handleStatusChange(student.studentId, AttendanceStatus.PRESENT)}
-                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all ${
+                        className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
                           currentStatus === AttendanceStatus.PRESENT
-                            ? "bg-green-600 text-white shadow-sm"
-                            : "text-slate-500 hover:bg-slate-200/50"
+                            ? "bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-none font-extrabold"
+                            : "text-muted-foreground hover:bg-muted"
                         }`}
                       >
                         <UserCheck className="size-3.5" />
@@ -154,11 +155,12 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
 
                       {/* LATE */}
                       <button
+                        type="button"
                         onClick={() => handleStatusChange(student.studentId, AttendanceStatus.LATE)}
-                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all ${
+                        className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
                           currentStatus === AttendanceStatus.LATE
-                            ? "bg-amber-500 text-white shadow-sm"
-                            : "text-slate-500 hover:bg-slate-200/50"
+                            ? "bg-amber-50 text-amber-800 border border-amber-300 shadow-none font-extrabold"
+                            : "text-muted-foreground hover:bg-muted"
                         }`}
                       >
                         <Clock className="size-3.5" />
@@ -167,11 +169,12 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
 
                       {/* ABSENT */}
                       <button
+                        type="button"
                         onClick={() => handleStatusChange(student.studentId, AttendanceStatus.ABSENT)}
-                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all ${
+                        className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
                           currentStatus === AttendanceStatus.ABSENT
-                            ? "bg-red-600 text-white shadow-sm"
-                            : "text-slate-500 hover:bg-slate-200/50"
+                            ? "bg-rose-50 text-rose-800 border border-rose-300 shadow-none font-extrabold"
+                            : "text-muted-foreground hover:bg-muted"
                         }`}
                       >
                         <XCircle className="size-3.5" />
@@ -180,11 +183,12 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
 
                       {/* EXCUSED */}
                       <button
+                        type="button"
                         onClick={() => handleStatusChange(student.studentId, AttendanceStatus.EXCUSED)}
-                        className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all ${
+                        className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
                           currentStatus === AttendanceStatus.EXCUSED
-                            ? "bg-slate-600 text-white shadow-sm"
-                            : "text-slate-500 hover:bg-slate-200/50"
+                            ? "bg-stone-100 text-stone-800 border border-stone-300 shadow-none font-extrabold"
+                            : "text-muted-foreground hover:bg-muted"
                         }`}
                       >
                         <AlertCircle className="size-3.5" />
@@ -200,10 +204,10 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
                         placeholder="اكتب سبب الغياب..."
                         value={currentReason}
                         onChange={(e) => handleReasonChange(student.studentId, e.target.value)}
-                        className="h-8 rounded-lg text-xs border-red-200 focus:border-red-500 focus:ring-red-500 bg-red-50/10 placeholder:text-slate-300"
+                        className="h-8 rounded-lg text-xs border-rose-200 focus:border-rose-400 focus:ring-rose-400/10 bg-rose-50/20 placeholder:text-muted-foreground"
                       />
                     ) : (
-                      <span className="text-[11px] text-slate-300 italic block pr-2">لا يوجد ملاحظات</span>
+                      <span className="text-[11px] text-muted-foreground/60 italic block pr-2">لا يوجد ملاحظات</span>
                     )}
                   </div>
                 </Card>
@@ -212,12 +216,12 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
           </div>
 
           {/* Action button */}
-          <div className="flex justify-end pt-4 border-t border-slate-100">
+          <div className="flex justify-end pt-4 border-t border-border">
             <Button
               onClick={handleSave}
               disabled={saveMutation.isPending}
               variant="brand"
-              className="h-10 px-8 rounded-xl flex items-center gap-2 font-semibold shadow-md cursor-pointer"
+              className="h-10 px-8 rounded-xl flex items-center gap-2 font-bold shadow-none cursor-pointer"
             >
               {saveMutation.isPending ? (
                 <>
@@ -234,7 +238,7 @@ export function AttendanceRecorder({ groupId, sessionId, onBack }: AttendanceRec
           </div>
         </div>
       ) : (
-        <div className="text-center py-16 text-slate-400">
+        <div className="text-center py-16 text-muted-foreground">
           <p className="font-semibold">لا يوجد طلاب مسجلون في هذه المجموعة الدراسية بعد.</p>
         </div>
       )}

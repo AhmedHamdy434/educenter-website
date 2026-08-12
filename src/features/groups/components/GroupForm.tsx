@@ -38,8 +38,6 @@ export function GroupForm({
   group,
   gradesOptions,
 }: GroupFormProps) {
-
-
   // Time picker temporary state
   const [tempDay, setTempDay] = useState<string>("SATURDAY");
   const [tempHour, setTempHour] = useState<string>("4");
@@ -93,26 +91,30 @@ export function GroupForm({
   const { data: teachersList = [], isLoading: isTeachersLoading } =
     useTeachersOptionsQuery(selectedSubjectId, isOpen);
 
-  // Keep track of previous values to handle cascading resets only on user changes
-  const prevGradeIdRef = useRef(selectedGradeId);
-  const prevSubjectIdRef = useRef(selectedSubjectId);
+  // Keep track of previous values to handle cascading resets only on user change
+  const prevGradeIdRef = useRef(group?.gradeId || "");
+  const prevSubjectIdRef = useRef(group?.subjectId || "");
 
   useEffect(() => {
-    if (prevGradeIdRef.current && prevGradeIdRef.current !== selectedGradeId) {
-      setValue("subjectId", "");
-      setValue("teacherId", "");
+    if (selectedGradeId && selectedGradeId !== prevGradeIdRef.current) {
+      if (prevGradeIdRef.current !== "") {
+        setValue("subjectId", "");
+        setValue("teacherId", "");
+      }
+      prevGradeIdRef.current = selectedGradeId;
     }
-    prevGradeIdRef.current = selectedGradeId;
   }, [selectedGradeId, setValue]);
 
   useEffect(() => {
-    if (prevSubjectIdRef.current && prevSubjectIdRef.current !== selectedSubjectId) {
-      setValue("teacherId", "");
+    if (selectedSubjectId && selectedSubjectId !== prevSubjectIdRef.current) {
+      if (prevSubjectIdRef.current !== "") {
+        setValue("teacherId", "");
+      }
+      prevSubjectIdRef.current = selectedSubjectId;
     }
-    prevSubjectIdRef.current = selectedSubjectId;
   }, [selectedSubjectId, setValue]);
 
-  // Populate form values if editing
+  // Reset form when modal opens with new group or empty
   useEffect(() => {
     if (group) {
       reset({
@@ -297,8 +299,8 @@ export function GroupForm({
       </div>
 
       {/* Schedule Picker Section */}
-      <div className="border border-slate-200 rounded-xl p-4 space-y-4 bg-slate-50/30">
-        <h3 className="text-sm font-semibold text-slate-800">
+      <div className="border border-border rounded-xl p-4 space-y-4 bg-secondary/20">
+        <h3 className="text-sm font-bold text-foreground">
           جدول المواعيد الأسبوعية للمجموعة
         </h3>
 
@@ -338,7 +340,7 @@ export function GroupForm({
             <button
               type="button"
               onClick={handleAddScheduleItem}
-              className="h-11 px-4 rounded-xl bg-[#1E4632] hover:bg-[#1E4632]/90 text-white flex items-center justify-center transition-colors shrink-0"
+              className="h-11 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center transition-colors shrink-0 cursor-pointer"
               title="إضافة موعد"
             >
               <Plus className="size-4" />
@@ -348,11 +350,11 @@ export function GroupForm({
 
         {/* Selected schedule list */}
         {fields.length > 0 ? (
-          <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+          <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
             {fields.map((item, index) => (
               <div
                 key={item.id}
-                className="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-sm"
+                className="flex items-center gap-1.5 bg-card border border-border px-3 py-1.5 rounded-lg text-xs font-bold text-foreground shadow-none"
               >
                 <span>
                   {DAY_NAMES_AR[item.day]} {formatTime(item.hour, item.minute)}
@@ -360,7 +362,7 @@ export function GroupForm({
                 <button
                   type="button"
                   onClick={() => remove(index)}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded-md transition-colors"
+                  className="text-destructive hover:bg-destructive/10 p-1 rounded-md transition-colors cursor-pointer"
                 >
                   <Trash2 className="size-3" />
                 </button>
@@ -368,13 +370,13 @@ export function GroupForm({
             ))}
           </div>
         ) : (
-          <div className="text-xs text-slate-400 py-2">
+          <div className="text-xs text-muted-foreground py-2">
             لم يتم تحديد أي مواعيد بعد. يرجى إضافة موعد واحد على الأقل.
           </div>
         )}
 
         {errors.schedule && (
-          <p className="text-xs text-red-500 font-semibold pt-1">
+          <p className="text-xs text-destructive font-semibold pt-1">
             {errors.schedule.message}
           </p>
         )}

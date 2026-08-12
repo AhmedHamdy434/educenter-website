@@ -21,10 +21,10 @@ export function getStudentColumns({
       header: "الطالب",
       cell: ({ row }: { row: { original: Student } }) => (
         <div className="flex flex-col text-right">
-          <span className="font-semibold text-slate-800">
+          <span className="font-bold text-foreground">
             {row.original.user.fullName}
           </span>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-muted-foreground">
             {row.original.user.email}
           </span>
         </div>
@@ -36,7 +36,7 @@ export function getStudentColumns({
       cell: ({ row }: { row: { original: Student } }) => {
         const activeEnrollment = row.original.enrollments?.find((e) => e.isActive);
         return (
-          <span className="font-medium text-[#1E4632] bg-[#F0F7F4] px-2.5 py-1 rounded-full text-xs border border-[#1E4632]/10">
+          <span className="font-bold text-primary bg-secondary px-2.5 py-1 rounded-md text-xs border border-border">
             {activeEnrollment?.grade.name || "غير مسجل"}
           </span>
         );
@@ -46,7 +46,7 @@ export function getStudentColumns({
       accessorKey: "user.phone",
       header: "الهاتف",
       cell: ({ row }: { row: { original: Student } }) => (
-        <span className="text-slate-600 font-mono text-xs block" dir="ltr">
+        <span className="text-muted-foreground font-mono text-xs block" dir="ltr">
           {row.original.user.phone}
         </span>
       ),
@@ -55,7 +55,7 @@ export function getStudentColumns({
       accessorKey: "parentPhone",
       header: "هاتف ولي الأمر",
       cell: ({ row }: { row: { original: Student } }) => (
-        <span className="text-slate-600 font-mono text-xs block" dir="ltr">
+        <span className="text-muted-foreground font-mono text-xs block" dir="ltr">
           {row.original.parentPhone}
         </span>
       ),
@@ -65,7 +65,7 @@ export function getStudentColumns({
       header: "ملاحظات",
       cell: ({ row }: { row: { original: Student } }) => (
         <span
-          className="text-slate-500 max-w-xs truncate block"
+          className="text-muted-foreground max-w-xs truncate block text-xs"
           title={row.original.notes || ""}
         >
           {row.original.notes || "لا توجد ملاحظات"}
@@ -93,15 +93,15 @@ export function getStudentColumns({
             onClick={() => onEdit(row.original)}
             variant="brandOutline"
             size="sm"
-            className="h-8 rounded-lg text-[#1E4632] border-[#1E4632]/20 hover:bg-[#F0F7F4]"
+            className="h-8 rounded-lg font-semibold"
           >
             تعديل
           </Button>
           <Button
             onClick={() => onViewPayments(row.original)}
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="h-8 rounded-lg text-slate-600 hover:bg-slate-100 border border-slate-200/50"
+            className="h-8 rounded-lg border-border text-foreground hover:bg-muted font-medium text-xs"
           >
             المدفوعات
           </Button>

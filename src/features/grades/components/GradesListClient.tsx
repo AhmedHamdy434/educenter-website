@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Layers } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { TableSearch } from "@/components/common/TableSearch";
 import { FilterDropdown } from "@/components/common/FilterDropdown";
@@ -65,11 +65,12 @@ export function GradesListClient({ initialData }: GradesListClientProps) {
   );
 
   return (
-    <div className="space-y-6 text-right">
-      {/* 1. Header (Shared) */}
+    <div className="space-y-6 text-right" dir="rtl">
+      {/* 1. Header with Focused Title Icon */}
       <PageHeader
         title="المراحل الدراسية"
         description="إدارة وتهيئة المراحل الدراسية والصفوف التابعة للمركز التعليمي."
+        icon={Layers}
         actionButton={{
           label: "مرحلة جديدة",
           icon: Plus,
@@ -77,10 +78,10 @@ export function GradesListClient({ initialData }: GradesListClientProps) {
         }}
       />
 
-      {/* 2. Filters & Table inside Glassy Card */}
-      <Card className="space-y-4">
+      {/* 2. Filters & Table inside Container Card */}
+      <Card className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-none">
         <div
-          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-4"
+          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2"
           dir="rtl"
         >
           <TableSearch

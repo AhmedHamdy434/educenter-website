@@ -22,7 +22,7 @@ export function TeacherGroupsList({ initialData }: TeacherGroupsListProps) {
   // Load teacher's groups with custom query hook
   const { data: response, isLoading } = useTeacherGroupsQuery(
     { limit: 100 },
-    initialData,
+    initialData
   );
 
   const groupsData = response?.data;
@@ -41,13 +41,13 @@ export function TeacherGroupsList({ initialData }: TeacherGroupsListProps) {
   return (
     <div className="space-y-6 text-right animate-fade-in" dir="rtl">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <BookOpen className="size-6 text-[#1E4632]" />
+          <h1 className="text-2xl font-extrabold text-foreground flex items-center gap-2 tracking-tight">
+            <BookOpen className="size-6 text-primary" />
             مجموعاتي الدراسية
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             عرض المجموعات الدراسية المسؤولة عنها ومتابعة حضور وغياب الطلاب.
           </p>
         </div>
@@ -69,15 +69,15 @@ export function TeacherGroupsList({ initialData }: TeacherGroupsListProps) {
           {filteredGroups.map((group) => (
             <Card
               key={group.id}
-              className="flex flex-col h-full border border-slate-100 hover:border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 p-6 space-y-4"
+              className="flex flex-col h-full border border-border bg-card shadow-none hover:border-primary/40 transition-all duration-200 p-6 space-y-4 rounded-xl"
             >
               {/* Header */}
-              <div className="flex items-start justify-between gap-2 ">
+              <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1 overflow-hidden">
-                  <h3 className="font-bold text-slate-800 text-base truncate" title={group.name}>
+                  <h3 className="font-bold text-foreground text-base truncate" title={group.name}>
                     {group.name}
                   </h3>
-                  <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold">
                     <GraduationCap className="size-3.5" />
                     {group.grade.name}
                   </span>
@@ -85,46 +85,46 @@ export function TeacherGroupsList({ initialData }: TeacherGroupsListProps) {
               </div>
 
               {/* Specs */}
-              <div className="space-y-2.5 text-xs text-slate-600 flex-1">
+              <div className="space-y-2.5 text-xs text-muted-foreground flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">المادة</span>
-                  <span className="font-semibold text-slate-700">{group.subject.name}</span>
+                  <span className="text-muted-foreground">المادة</span>
+                  <span className="font-bold text-foreground">{group.subject.name}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">الطلاب المقيدون</span>
-                  <span className="font-semibold text-slate-700 flex items-center gap-1">
-                    <Users className="size-3.5 text-slate-400" />
+                  <span className="text-muted-foreground">الطلاب المقيدون</span>
+                  <span className="font-bold text-foreground flex items-center gap-1">
+                    <Users className="size-3.5 text-muted-foreground" />
                     {group._count?.students || 0} / {group.capacity || "∞"}
                   </span>
                 </div>
 
                 {/* Schedules */}
-                <div className="border-t border-slate-50 pt-2.5 flex flex-wrap">
-                  <span className="text-slate-400 block mb-1">مواعيد الحصة الأسبوعية:</span>
+                <div className="border-t border-border pt-2.5 flex flex-wrap">
+                  <span className="text-muted-foreground block mb-1 text-[11px] font-semibold">مواعيد الحصة الأسبوعية:</span>
                   {group.schedule && group.schedule.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5">
                       {group.schedule.map((slot, i) => (
                         <span
                           key={slot.id || i}
-                          className="bg-slate-50 border border-slate-100 px-2 py-0.5 rounded text-[10px] font-medium text-slate-500"
+                          className="bg-secondary border border-border px-2 py-0.5 rounded-md text-[11px] font-semibold text-primary"
                         >
                           {DAY_NAMES_AR[slot.day]}: {formatTime(slot.hour, slot.minute)}
                         </span>
                       ))}
                     </div>
                   ) : (
-                    <span className="text-[11px] text-slate-400 italic">لا توجد مواعيد محددة</span>
+                    <span className="text-[11px] text-muted-foreground italic">لا توجد مواعيد محددة</span>
                   )}
                 </div>
               </div>
 
               {/* Action Button */}
-              <div className="pt-2 border-t border-slate-50">
+              <div className="pt-2 border-t border-border">
                 <Button
                   asChild
                   variant="brandOutline"
-                  className="w-full rounded-xl flex items-center justify-center gap-2 h-9 text-xs"
+                  className="w-full rounded-lg flex items-center justify-center gap-2 h-9 text-xs font-semibold"
                 >
                   <Link href={`/dashboard/instructor/groups/${group.id}`}>
                     <span>عرض التفاصيل</span>
@@ -136,10 +136,10 @@ export function TeacherGroupsList({ initialData }: TeacherGroupsListProps) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 text-slate-400 border border-dashed border-slate-200 rounded-3xl bg-white shadow-sm max-w-lg mx-auto">
-          <BookOpen className="size-16 mx-auto text-slate-200 mb-4" />
-          <h3 className="font-bold text-slate-700 text-lg">لم يتم العثور على مجموعات</h3>
-          <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
+        <div className="text-center py-16 text-muted-foreground border border-dashed border-border rounded-2xl bg-card shadow-none max-w-lg mx-auto p-8">
+          <BookOpen className="size-14 mx-auto text-muted-foreground/30 mb-4" />
+          <h3 className="font-bold text-foreground text-lg">لم يتم العثور على مجموعات</h3>
+          <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
             {search
               ? "لم يتم العثور على أي مجموعة تطابق بحثك الحالي."
               : "لم يتم تعيينك كمعلم مسؤول لأي مجموعة دراسية نشطة حالياً."}

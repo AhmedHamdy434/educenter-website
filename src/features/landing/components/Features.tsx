@@ -1,92 +1,94 @@
-import React from "react";
-import { Laptop, MessageSquare, Shield, Users, PieChart } from "lucide-react";
-import { FadeIn, StaggerContainer, StaggerItem, HoverCard } from "@/components/common/motion-wrapper";
+import {
+  Users,
+  CalendarCheck,
+  CreditCard,
+  FileSpreadsheet,
+  Award,
+  ShieldCheck,
+} from "lucide-react";
+import { FadeIn, HoverCard } from "@/components/common/motion-wrapper";
 
 export function Features() {
   const features = [
     {
-      title: "متاح في أي وقت",
-      description: "من أي مكان وفي أي وقت عبر جميع الأجهزة الذكية والأجهزة المحمولة.",
-      icon: Laptop,
-      color: "green", // #1E4632
-    },
-    {
-      title: "تواصل فعال",
-      description: "تواصل مستمر وسريع مع الطلاب وأولياء الأمور لضمان سير العملية التعليمية.",
-      icon: MessageSquare,
-      color: "amber", // #E5A93B
-    },
-    {
-      title: "آمن وموثوق",
-      description: "حماية كاملة لبياناتك وبيانات طلابك ومعلميك بأعلى معايير الأمان والتشفير.",
-      icon: Shield,
-      color: "green",
-    },
-    {
-      title: "إدارة شاملة",
-      description: "إدارة الطلاب، المعلمين، الحضور، الغياب، الدروس، والامتحانات بكل سهولة.",
+      title: "إدارة المجموعات والطلاب",
+      description:
+        "تنظيم الطلاب داخل المجموعات الدراسية، متابعة السعة الاستيعابية، وتسجيل بيانات أولياء الأمور بسهولة.",
       icon: Users,
-      color: "amber",
     },
     {
-      title: "تقارير ذكية",
-      description: "تقارير تفصيلية وإحصاءات دقيقة لتساعدك على اتخاذ القرارات وتحسين أداء مركزك.",
-      icon: PieChart,
-      color: "green",
+      title: "تسجيل الحضور والغياب الذكي",
+      description:
+        "كشوف حضور وغياب سريعة لكل حصة، مع إمكانية تدوين الملاحظات وإرسال إشعارات فورية.",
+      icon: CalendarCheck,
+    },
+    {
+      title: "تحصيل الاشتراكات والمدفوعات",
+      description:
+        "متابعة اشتراكات الطلاب الشهرية، معرفة المتأخرات بدقة، وإصدار إيصالات تحصيل فورية.",
+      icon: CreditCard,
+    },
+    {
+      title: "تقارير ونسب إحصائية دقيقة",
+      description:
+        "رسوم بيانية وتقارير تفصيلية عن أداء المركز، نسب الحضور، والإيرادات المالية في فترات زمنية محددة.",
+      icon: FileSpreadsheet,
+    },
+    {
+      title: "نظام الواجبات والاختبارات",
+      description:
+        "إدارة درجات الطلاب، تسجيل نتائج الامتحانات الشهرية، ومشاركة النتائج مع أولياء الأمور.",
+      icon: Award,
+    },
+    {
+      title: "صلاحيات وحماية متقدمة",
+      description:
+        "لوحات تحكم مخصصة لكل من مدير المركز، المعلم، والطالب، مع أمان تام وحفظ سحابي لبياناتك.",
+      icon: ShieldCheck,
     },
   ];
 
   return (
-    <section id="features" className="w-full bg-slate-50/60 py-20 border-y border-slate-100">
-      <div className="container">
-        
+    <section id="features" className="w-full bg-secondary/30 py-20 border-y border-border" dir="rtl">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <FadeIn direction="up" className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F0F7F4] text-[#1E4632] font-semibold">
-            لماذا تختارنا؟
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-primary font-bold text-xs border border-border">
+            <span>كل ما تحتاجه في مكان واحد</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1E4632] tracking-tight">
-            مميزات تساعدك على النمو والنجاح
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            مميزات مصممة خصيصاً لتطوير مركزك
           </h2>
-          <p className="text-slate-500 text-base leading-relaxed">
-            تم تصميم منصة EduCenter لتغطي كافة الاحتياجات الإدارية والتعليمية للمراكز والمنشآت التعليمية بكفاءة عالية.
+          <p className="text-muted-foreground text-base leading-relaxed font-medium">
+            صممنا EduCenter ليغطي كافة جوانب العمل اليومي داخل المراكز التعليمية لتوفير الوقت والجهد وزيادة الإنتاجية.
           </p>
-        </FadeIn>
+        </div>
 
         {/* Features Grid */}
-        <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {features.map((feature, idx) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => {
             const Icon = feature.icon;
-            const isGreen = feature.color === "green";
             return (
-              <StaggerItem key={idx} direction="up" className="h-full">
+              <FadeIn key={index} direction="up" delay={index * 0.1} duration={0.5}>
                 <HoverCard
-                  className="group flex flex-col items-center text-center p-8 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-slate-200/80 transition-all duration-300 h-full"
+                  className="group flex flex-col items-center text-center p-8 bg-card border border-border rounded-2xl shadow-none hover:border-primary/40 transition-all duration-300 h-full"
                 >
-                  {/* Icon Wrapper */}
                   <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-2xl mb-6 shadow-sm transition-all duration-300 group-hover:scale-110 ${
-                      isGreen
-                        ? "bg-[#F0F7F4] text-[#1E4632] group-hover:bg-[#1E4632] group-hover:text-white"
-                        : "bg-[#FFFBEB] text-[#E5A93B] group-hover:bg-[#E5A93B] group-hover:text-white"
-                    }`}
+                    className="flex size-14 items-center justify-center rounded-2xl mb-6 bg-secondary text-primary border border-border transition-transform duration-300 group-hover:scale-105"
                   >
-                    <Icon className="size-6" />
+                    <Icon className="size-7 stroke-[1.75]" />
                   </div>
-
-                  {/* Content */}
-                  <h3 className="font-bold text-[#1E4632] text-lg mb-3">
+                  <h3 className="font-bold text-foreground text-lg mb-3">
                     {feature.title}
                   </h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed font-medium">
                     {feature.description}
                   </p>
                 </HoverCard>
-              </StaggerItem>
+              </FadeIn>
             );
           })}
-        </StaggerContainer>
-
+        </div>
       </div>
     </section>
   );

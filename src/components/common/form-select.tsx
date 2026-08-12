@@ -10,100 +10,121 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export interface SelectOption {
+export interface FormSelectOption {
   value: string;
   label: string;
 }
 
-export type FormSelectProps<TFieldValues extends FieldValues = FieldValues> = {
-  options: SelectOption[];
+export type SelectOption = FormSelectOption;
+
+export type FormSelectProps<
+  TFieldValues extends FieldValues = FieldValues
+> = {
   label?: string;
-  placeholder?: string;
   error?: string;
+  placeholder?: string;
+  options: FormSelectOption[];
+  disabled?: boolean;
+  required?: boolean;
+  id?: string;
   className?: string;
 } & (
   | {
       name: Path<TFieldValues>;
       control: Control<TFieldValues>;
       value?: never;
+      defaultValue?: never;
       onValueChange?: never;
     }
   | {
-      name?: never;
+      name?: string;
       control?: never;
-      value: string;
-      onValueChange: (value: string) => void;
+      value?: string;
+      defaultValue?: string;
+      onValueChange?: (value: string) => void;
     }
 );
 
 export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
+  label,
+  error,
+  placeholder = "اختر من القائمة...",
+  options,
+  value,
+  defaultValue,
+  onValueChange,
+  disabled,
+  required,
   name,
   control,
-  options,
-  label,
-  placeholder,
-  error,
+  id,
   className,
-  value,
-  onValueChange,
 }: FormSelectProps<TFieldValues>) {
-  const triggerButton = (
-    <SelectTrigger
-      aria-invalid={!!error}
-      className={cn(
-        "w-full! h-11! px-4 py-3 rounded-xl! border bg-white text-slate-800 text-sm font-medium outline-none transition-all text-right flex items-center justify-between",
-        error
-          ? "border-red-300 focus-visible:border-red-500 focus-visible:ring-red-500/5"
-          : "border-slate-200 focus-visible:border-[#1e4632] focus-visible:ring-[#1e4632]/5",
-        className
-      )}
+  const renderSelect = (currentVal: string | undefined, handleValChange: (val: string) => void) => (
+    <Select
+      value={currentVal}
+      defaultValue={defaultValue}
+      onValueChange={handleValChange}
+      disabled={disabled}
+      name={name}
     >
-      <SelectValue placeholder={placeholder} />
-    </SelectTrigger>
-  );
-
-  const selectContent = (
-    <SelectContent
-      position="popper"
-      className="bg-white border border-slate-200/80 rounded-xl shadow-xl z-50 w-(--radix-select-trigger-width) max-h-60 overflow-y-auto"
-    >
-      {options.map((option) => (
-        <SelectItem
-          key={option.value}
-          value={option.value}
-        >
-          {option.label}
-        </SelectItem>
-      ))}
-    </SelectContent>
+      <SelectTrigger
+        id={id}
+        aria-invalid={!!error}
+        className={cn(
+          "w-full h-11 px-4 py-3 rounded-xl border border-input bg-card text-foreground text-sm font-medium outline-none transition-all text-right flex items-center justify-between shadow-none",
+          error
+            ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/10"
+            : "focus:border-primary focus:ring-1 focus:ring-primary/10",
+          !currentVal && !defaultValue && "text-muted-foreground",
+          className
+        )}
+      >
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent
+        className="rounded-xl border border-border bg-card shadow-lg z-50 text-right"
+        dir="rtl"
+      >
+        {options.map((option) => (
+          <SelectItem
+            key={option.value}
+            value={option.value}
+            className="text-foreground text-xs font-semibold hover:bg-muted py-2 rounded-lg cursor-pointer"
+          >
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 
   return (
     <div className="space-y-2 w-full text-right" dir="rtl">
       {label && (
-        <Label className="text-xs font-semibold text-slate-600 block text-right">
+        <Label
+          htmlFor={id}
+          className="text-xs font-semibold text-muted-foreground block text-right select-none"
+        >
           {label}
+          {required && (
+            <span className="text-destructive mr-1 select-none">*</span>
+          )}
         </Label>
       )}
       {control && name ? (
         <Controller
           name={name}
           control={control}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value} dir="rtl">
-              {triggerButton}
-              {selectContent}
-            </Select>
-          )}
+          render={({ field }) => renderSelect(field.value, field.onChange)}
         />
       ) : (
-        <Select onValueChange={onValueChange} value={value} dir="rtl">
-          {triggerButton}
-          {selectContent}
-        </Select>
+        renderSelect(value, onValueChange || (() => {}))
       )}
       {error && (
-        <p className="text-xs text-red-500 font-semibold text-right">{error}</p>
+        <p className="text-xs text-destructive font-semibold text-right">
+          {error}
+        </p>
       )}
     </div>
   );

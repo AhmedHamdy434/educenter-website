@@ -80,7 +80,7 @@ export function GroupDetailsClient({
 
   const handleAddStudents = async (
     studentIds: string[],
-    subscriptionStartDate?: string,
+    subscriptionStartDate?: string
   ) => {
     await addStudents(
       {
@@ -94,7 +94,7 @@ export function GroupDetailsClient({
             setIsAddModalOpen(false);
           }
         },
-      },
+      }
     );
   };
 
@@ -114,14 +114,14 @@ export function GroupDetailsClient({
         <div className="lg:col-span-2 space-y-6">
           {/* Tabs Selector Bar */}
           {!isTeacher && (
-            <div className="flex border-b border-slate-200 gap-6">
+            <div className="flex border-b border-border gap-6">
               <button
                 onClick={() => setActiveTab("students")}
                 className={cn(
-                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
+                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
                   activeTab === "students"
-                    ? "border-[#1E4632] text-[#1E4632]"
-                    : "border-transparent text-slate-400 hover:text-slate-600",
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
                 )}
               >
                 <Users className="size-4" />
@@ -131,10 +131,10 @@ export function GroupDetailsClient({
               <button
                 onClick={() => setActiveTab("attendance")}
                 className={cn(
-                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
+                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
                   activeTab === "attendance"
-                    ? "border-[#1E4632] text-[#1E4632]"
-                    : "border-transparent text-slate-400 hover:text-slate-600",
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
                 )}
               >
                 <CalendarCheck2 className="size-4" />
@@ -144,10 +144,10 @@ export function GroupDetailsClient({
               <button
                 onClick={() => setActiveTab("reports")}
                 className={cn(
-                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
+                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
                   activeTab === "reports"
-                    ? "border-[#1E4632] text-[#1E4632]"
-                    : "border-transparent text-slate-400 hover:text-slate-600",
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
                 )}
               >
                 <TrendingUp className="size-4" />
@@ -158,10 +158,10 @@ export function GroupDetailsClient({
                 <button
                   onClick={() => setActiveTab("payments")}
                   className={cn(
-                    "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-0.5 cursor-pointer",
+                    "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
                     activeTab === "payments"
-                      ? "border-[#1E4632] text-[#1E4632]"
-                      : "border-transparent text-slate-400 hover:text-slate-600",
+                      ? "border-primary text-primary"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
                   )}
                 >
                   <CreditCard className="size-4" />

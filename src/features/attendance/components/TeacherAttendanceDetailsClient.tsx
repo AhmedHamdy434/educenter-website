@@ -26,33 +26,36 @@ export function TeacherAttendanceDetailsClient({
   return (
     <div className="space-y-6 text-right animate-fade-in" dir="rtl">
       {/* Navigation Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-5">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-            <Link href="/dashboard/instructor/attendance" className="hover:text-slate-600 transition-colors">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+            <Link
+              href="/dashboard/instructor/attendance"
+              className="hover:text-foreground transition-colors font-semibold"
+            >
               التحضير والغياب
             </Link>
             <span>/</span>
-            <span className="text-slate-600 font-medium">كشف حضور المجموعة</span>
+            <span className="text-foreground font-bold">كشف حضور المجموعة</span>
           </div>
 
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <CalendarCheck className="size-6 text-[#1E4632]" />
+          <h1 className="text-2xl font-extrabold text-foreground flex items-center gap-2 tracking-tight">
+            <CalendarCheck className="size-6 text-primary" />
             كشف حضور وغياب: {group.name}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-1">
-            <span className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mt-1">
+            <span className="flex items-center gap-1 font-medium">
               <GraduationCap className="size-3.5" />
               {group.grade.name}
             </span>
-            <span className="text-slate-300">•</span>
-            <span className="flex items-center gap-1">
+            <span className="text-border">•</span>
+            <span className="flex items-center gap-1 font-medium">
               <Users className="size-3.5" />
               {group.students.length} طالب مسجل
             </span>
-            <span className="text-slate-300">•</span>
-            <span>المادة: {group.subject.name}</span>
+            <span className="text-border">•</span>
+            <span className="font-medium">المادة: {group.subject.name}</span>
           </div>
         </div>
 
@@ -60,7 +63,7 @@ export function TeacherAttendanceDetailsClient({
           <Button
             asChild
             variant="outline"
-            className="h-9 px-4 rounded-xl flex items-center gap-2 text-slate-600 hover:text-slate-800"
+            className="h-9 px-4 rounded-lg border-border text-foreground hover:bg-muted font-semibold flex items-center gap-2"
           >
             <Link href="/dashboard/instructor/attendance">
               <ArrowRight className="size-4" />
@@ -71,8 +74,11 @@ export function TeacherAttendanceDetailsClient({
       </div>
 
       {/* Main Content */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
-        <AttendanceTab groupId={group.id} totalStudents={group.students.length} />
+      <div className="bg-card rounded-2xl border border-border shadow-none p-6">
+        <AttendanceTab
+          groupId={group.id}
+          totalStudents={group.students.length}
+        />
       </div>
     </div>
   );

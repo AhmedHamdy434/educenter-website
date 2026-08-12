@@ -1,94 +1,61 @@
-import React from "react";
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FadeIn, ScaleIn } from "@/components/common/motion-wrapper";
+import { FadeIn } from "@/components/common/motion-wrapper";
 
 export function CTA() {
   return (
-    <section className="w-full py-16">
+    <section className="w-full py-16 md:py-24" dir="rtl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Banner Box */}
-        <div className="relative w-full bg-[#1E4632] rounded-3xl md:rounded-[2.5rem] overflow-hidden px-8 py-14 md:p-16 lg:p-20 shadow-xl shadow-[#1E4632]/10">
-          {/* Decorative Vector: Paper Airplane & Dashed Line */}
-          <div className="absolute top-[10%] left-[25%] opacity-15 hidden md:block select-none">
-            <svg
-              width="120"
-              height="80"
-              viewBox="0 0 120 80"
-              fill="none"
-              className="text-white"
-            >
-              <path
-                d="M10 70 C30 50, 45 40, 70 50 C95 60, 105 40, 110 20"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeDasharray="4 4"
-              />
-              <path d="M110 20 L102 24 L108 28 Z" fill="currentColor" />
-            </svg>
-          </div>
+        <FadeIn direction="up" duration={0.6}>
+          <div className="relative w-full bg-primary text-primary-foreground rounded-3xl md:rounded-[2.5rem] overflow-hidden px-8 py-14 md:p-16 lg:p-20 shadow-none border border-primary/20">
+            {/* Background Decorative Circles */}
+            <div className="absolute top-0 right-0 -mr-20 -mt-20 size-80 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 size-80 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            {/* Right Column: Text & CTA Details (in RTL, it is right) */}
-            <FadeIn
-              direction="right"
-              delay={0.1}
-              className="lg:col-span-7 flex flex-col items-start text-right space-y-6 z-10 text-white"
-            >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight tracking-tight">
-                جاهز للانطلاق؟
+            <div className="relative z-10 max-w-2xl mx-auto text-center space-y-6">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-amber-300 text-xs font-bold backdrop-blur-xs border border-white/10">
+                <Sparkles className="size-3.5" />
+                <span>ابدأ مجاناً اليوم</span>
+              </div>
+
+              {/* Title */}
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
+                جاهز لنقل مركزك التعليمي إلى مستوى جديد من الاحترافية؟
               </h2>
-              <p className="text-white/85 text-base sm:text-lg max-w-lg leading-relaxed">
-                انضم إلى آلاف المراكز التعليمية التي تدير أعمالها بسهولة
-                واحترافية مع EduCenter.
+
+              {/* Description */}
+              <p className="text-primary-foreground/80 text-sm sm:text-base leading-relaxed max-w-xl mx-auto font-medium">
+                انضم الآن لمئات المراكز التعليمية التي تعتمد على منصة EduCenter لتنظيم عملها وتوفير الوقت والجهد.
               </p>
 
-              <div className="flex flex-col items-start gap-2.5 w-full sm:w-auto">
+              {/* CTA Action Buttons */}
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
                 <Button
+                  asChild
                   variant="brandWhite"
                   size="brandXl"
-                  className="font-bold"
+                  className="font-bold rounded-xl"
                 >
-                  ابدأ تجربتك المجانية الآن
+                  <Link href="#pricing" className="flex items-center gap-2">
+                    <span>ابدأ تجربتك المجانية</span>
+                    <ArrowLeft className="size-4 stroke-[2.5] rotate-180" />
+                  </Link>
                 </Button>
-                <span className="text-[12px] text-white/60 font-medium pr-2">
-                  * لا نحتاج إلى بطاقة ائتمان لتسجيل الاشتراك.
-                </span>
-              </div>
-            </FadeIn>
 
-            {/* Left Column: Visual Student Image */}
-            <ScaleIn
-              delay={0.25}
-              className="lg:col-span-5 relative w-full aspect-4/3 md:aspect-square max-w-[400px] lg:max-w-none mx-auto flex items-end justify-center"
-            >
-              {/* Floating decorative items inside green box */}
-              <div className="absolute top-[8%] left-[10%] p-2 rounded-xl bg-white/10 text-white/90 rotate-15">
-                <svg
-                  className="size-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+                <Button
+                  asChild
+                  variant="outline"
+                  size="brandXl"
+                  className="border-white/20 text-white hover:bg-white/10 hover:text-white font-semibold rounded-xl bg-transparent"
                 >
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                </svg>
+                  <a href="#contact">تحدث مع المبيعات</a>
+                </Button>
               </div>
-
-              {/* White overlay border shape for student image */}
-              <div className="relative w-[85%] h-[85%] rounded-b-2xl rounded-t-[80px] overflow-hidden border-4 border-white/20 shadow-2xl">
-                <Image
-                  src="/images/cta-student.png"
-                  alt="EduCenter Learning Support"
-                  fill
-                  sizes="(max-width: 1024px) 85vw, 35vw"
-                  className="object-cover object-top"
-                />
-              </div>
-            </ScaleIn>
+            </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </section>
   );

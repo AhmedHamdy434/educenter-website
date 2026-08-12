@@ -18,7 +18,7 @@ export function getSubjectColumns({
       id: "index",
       header: "#",
       cell: ({ row }: { row: { index: number } }) => (
-        <span className="inline-flex items-center justify-center rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600 border border-slate-100">
+        <span className="inline-flex items-center justify-center rounded-md bg-secondary px-2.5 py-1 text-xs font-semibold text-muted-foreground border border-border">
           {row.index + 1}
         </span>
       ),
@@ -27,7 +27,7 @@ export function getSubjectColumns({
       accessorKey: "name",
       header: "اسم المادة الدراسية",
       cell: ({ row }: { row: { original: Subject } }) => (
-        <span className="font-semibold text-slate-800">
+        <span className="font-semibold text-foreground">
           {row.original.name}
         </span>
       ),
@@ -36,7 +36,7 @@ export function getSubjectColumns({
       accessorKey: "grade.name",
       header: "المرحلة الدراسية",
       cell: ({ row }: { row: { original: Subject } }) => (
-        <span className="font-medium text-[#1E4632] bg-[#F0F7F4] px-2.5 py-1 rounded-full text-xs border border-[#1E4632]/10">
+        <span className="font-medium text-primary bg-secondary px-2.5 py-1 rounded-md text-xs border border-border">
           {row.original.grade?.name || "غير محددة"}
         </span>
       ),
@@ -46,7 +46,7 @@ export function getSubjectColumns({
       header: "الوصف",
       cell: ({ row }: { row: { original: Subject } }) => (
         <span
-          className="text-slate-500 max-w-xs truncate block"
+          className="text-muted-foreground max-w-xs truncate block text-xs"
           title={row.original.description || ""}
         >
           {row.original.description || "لا يوجد وصف"}
@@ -73,7 +73,7 @@ export function getSubjectColumns({
           onClick={() => onEdit(row.original)}
           variant="brandOutline"
           size="sm"
-          className="h-8 rounded-lg text-[#1E4632] border-[#1E4632]/20 hover:bg-[#F0F7F4]"
+          className="h-8 rounded-lg"
         >
           تعديل
         </Button>

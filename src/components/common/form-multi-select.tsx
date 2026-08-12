@@ -1,68 +1,73 @@
 "use client";
 
-import * as React from "react";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import { ChevronDown, Check, X, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronDown, X, Check, Search } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
-export interface SelectOption {
+export interface FormMultiSelectOption {
   value: string;
   label: string;
 }
 
-export interface FormMultiSelectProps<TFieldValues extends FieldValues> {
+export type FormMultiSelectProps<
+  TFieldValues extends FieldValues = FieldValues
+> = {
   name: Path<TFieldValues>;
   control: Control<TFieldValues>;
-  options: SelectOption[];
   label?: string;
   placeholder?: string;
+  options: FormMultiSelectOption[];
   error?: string;
+  disabled?: boolean;
+  required?: boolean;
   className?: string;
-}
+};
 
-export function FormMultiSelect<TFieldValues extends FieldValues>({
+export function FormMultiSelect<TFieldValues extends FieldValues = FieldValues>({
   name,
   control,
-  options,
   label,
-  placeholder = "اختر...",
+  placeholder = "اختر من القائمة...",
+  options,
   error,
+  disabled = false,
+  required = false,
   className,
 }: FormMultiSelectProps<TFieldValues>) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on click outside
+  // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
-        setSearchQuery("");
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  // Filter options based on search query
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="space-y-2 w-full text-right" dir="rtl" ref={containerRef}>
+    <div className="space-y-2 w-full text-right" dir="rtl" ref={dropdownRef}>
       {label && (
-        <Label className="text-xs font-semibold text-slate-600 block text-right">
+        <Label className="text-xs font-semibold text-muted-foreground block text-right select-none">
           {label}
+          {required && (
+            <span className="text-destructive mr-1 select-none">*</span>
+          )}
         </Label>
       )}
 
@@ -74,22 +79,18 @@ export function FormMultiSelect<TFieldValues extends FieldValues>({
             ? field.value
             : [];
 
-          const handleToggleOption = (value: string) => {
-            let newValue: string[];
-            if (selectedValues.includes(value)) {
-              newValue = selectedValues.filter((v) => v !== value);
+          const handleToggleOption = (val: string) => {
+            if (selectedValues.includes(val)) {
+              field.onChange(selectedValues.filter((v) => v !== val));
             } else {
-              newValue = [...selectedValues, value];
+              field.onChange([...selectedValues, val]);
             }
-            field.onChange(newValue);
           };
 
-          const handleRemoveOption = (value: string) => {
-            const newValue = selectedValues.filter((v) => v !== value);
-            field.onChange(newValue);
+          const handleRemoveOption = (val: string) => {
+            field.onChange(selectedValues.filter((v) => v !== val));
           };
 
-          // Find full option objects for selected values
           const selectedOptions = options.filter((opt) =>
             selectedValues.includes(opt.value)
           );
@@ -99,46 +100,47 @@ export function FormMultiSelect<TFieldValues extends FieldValues>({
               {/* Trigger Button */}
               <button
                 type="button"
-                aria-haspopup="listbox"
+                disabled={disabled}
+                onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
-                onClick={() => {
-                  setIsOpen((prev) => {
-                    const next = !prev;
-                    if (!next) setSearchQuery("");
-                    return next;
-                  });
-                }}
                 className={cn(
-                  "w-full h-11 px-4 py-3 rounded-xl border bg-white text-slate-800 text-sm font-medium outline-none transition-all text-right flex items-center justify-between focus:ring-1 focus:ring-[#1E4632]/20 focus:border-[#1E4632]",
+                  "w-full min-h-11 px-4 py-2.5 rounded-xl border border-input bg-card text-foreground text-sm font-medium outline-none transition-all text-right flex items-center justify-between shadow-none cursor-pointer",
                   error
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-500/5"
-                    : "border-slate-200 focus:border-[#1E4632]",
+                    ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/10"
+                    : "focus:border-primary focus:ring-1 focus:ring-primary/10",
+                  disabled && "opacity-50 cursor-not-allowed bg-muted",
                   className
                 )}
               >
-                <span className={cn(selectedValues.length === 0 && "text-slate-400 font-normal")}>
-                  {selectedValues.length > 0
-                    ? `تم اختيار ${selectedValues.length} من المواد`
-                    : placeholder}
-                </span>
-                <ChevronDown className={cn("size-4 text-slate-400 transition-transform duration-200", isOpen && "rotate-180")} />
+                <div className="flex flex-wrap items-center gap-1.5 flex-1 pr-1">
+                  {selectedValues.length === 0 ? (
+                    <span className="text-muted-foreground">{placeholder}</span>
+                  ) : (
+                    <span className="text-foreground text-xs font-bold bg-secondary px-2.5 py-1 rounded-md border border-border">
+                      تم اختيار {selectedValues.length} عنصر
+                    </span>
+                  )}
+                </div>
+                <ChevronDown
+                  className={cn(
+                    "size-4 text-muted-foreground transition-transform duration-200 shrink-0 mr-2",
+                    isOpen && "rotate-180 text-primary"
+                  )}
+                />
               </button>
 
-              {/* Dropdown Menu */}
-              {isOpen && (
-                <div
-                  role="listbox"
-                  className="absolute right-0 left-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl z-50 max-h-64 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
-                >
-                  {/* Search Input */}
-                  <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-100 bg-slate-50/50">
-                    <Search className="size-4 text-slate-400 shrink-0" />
+              {/* Dropdown Options */}
+              {isOpen && !disabled && (
+                <div className="absolute z-50 mt-1.5 w-full rounded-xl border border-border bg-card shadow-lg p-1.5 text-right animate-in fade-in-50 zoom-in-95 duration-100 flex flex-col max-h-64">
+                  {/* Search inside select */}
+                  <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/40 rounded-lg mb-1">
+                    <Search className="size-4 text-muted-foreground shrink-0" />
                     <input
                       type="text"
-                      placeholder="ابحث عن مادة..."
+                      placeholder="ابحث..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none"
+                      className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-none"
                       onClick={(e) => e.stopPropagation()}
                     />
                   </div>
@@ -155,17 +157,22 @@ export function FormMultiSelect<TFieldValues extends FieldValues>({
                             role="option"
                             aria-selected={isSelected}
                             onClick={() => handleToggleOption(option.value)}
-                            className="w-full px-4 py-2 text-right text-sm hover:bg-slate-50 transition-colors flex items-center justify-between text-slate-700 hover:text-slate-950"
+                            className={cn(
+                              "w-full px-3 py-2 text-right text-xs font-semibold rounded-lg transition-colors flex items-center justify-between cursor-pointer",
+                              isSelected
+                                ? "bg-secondary text-primary font-bold"
+                                : "text-foreground hover:bg-muted"
+                            )}
                           >
                             <span>{option.label}</span>
                             {isSelected && (
-                              <Check className="size-4 text-[#1E4632] shrink-0" />
+                              <Check className="size-4 text-primary shrink-0" />
                             )}
                           </button>
                         );
                       })
                     ) : (
-                      <div className="px-4 py-3 text-right text-sm text-slate-400">
+                      <div className="px-4 py-3 text-right text-xs text-muted-foreground">
                         لا توجد نتائج مطابقة.
                       </div>
                     )}
@@ -175,18 +182,18 @@ export function FormMultiSelect<TFieldValues extends FieldValues>({
 
               {/* Selected Options Tags */}
               {selectedOptions.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-2 bg-slate-50/40 p-2 border border-dashed border-slate-200 rounded-xl">
+                <div className="flex flex-wrap gap-1.5 mt-2 bg-secondary/30 p-2 border border-dashed border-border rounded-xl">
                   {selectedOptions.map((option) => (
                     <div
                       key={option.value}
-                      className="flex items-center gap-1.5 bg-[#1E4632]/5 text-[#1E4632] border border-[#1E4632]/10 px-2.5 py-1 rounded-lg text-xs font-semibold select-none animate-in zoom-in-95 duration-100"
+                      className="flex items-center gap-1.5 bg-secondary text-primary border border-border px-2.5 py-1 rounded-md text-xs font-bold select-none animate-in zoom-in-95 duration-100"
                     >
                       <span>{option.label}</span>
                       <button
                         type="button"
                         aria-label={`إزالة ${option.label}`}
                         onClick={() => handleRemoveOption(option.value)}
-                        className="hover:bg-[#1E4632]/10 rounded p-0.5 transition-colors text-[#1E4632]"
+                        className="hover:bg-primary/10 rounded p-0.5 transition-colors text-primary cursor-pointer"
                       >
                         <X className="size-3" />
                       </button>
@@ -200,7 +207,9 @@ export function FormMultiSelect<TFieldValues extends FieldValues>({
       />
 
       {error && (
-        <p className="text-xs text-red-500 font-semibold text-right">{error}</p>
+        <p className="text-xs text-destructive font-semibold text-right">
+          {error}
+        </p>
       )}
     </div>
   );

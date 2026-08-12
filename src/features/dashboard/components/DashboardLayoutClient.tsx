@@ -19,7 +19,7 @@ export function DashboardLayoutClient({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900" dir="rtl">
+    <div className="flex min-h-screen bg-background text-foreground" dir="rtl">
       {/* Desktop Sidebar (Fixed on right) */}
       <div className="hidden md:block shrink-0">
         <Sidebar role={role} user={user} />
@@ -27,7 +27,7 @@ export function DashboardLayoutClient({
 
       {/* Mobile Sidebar Drawer */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-50 flex md:hidden bg-slate-950/40 backdrop-blur-sm transition-opacity">
+        <div className="fixed inset-0 z-50 flex md:hidden bg-black/60 backdrop-blur-xs transition-opacity">
           {/* Backdrop Click */}
           <div
             className="absolute inset-0"
@@ -47,7 +47,7 @@ export function DashboardLayoutClient({
       )}
 
       {/* Main Workspace (Takes remaining width on left) */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden bg-background">
         {/* Dashboard Header */}
         <DashboardHeader
           user={user}

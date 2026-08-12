@@ -1,67 +1,67 @@
-"use client";
-
-import React from "react";
-import Link from "next/link";
-import { Plus } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import { Card } from "@/components/ui/card";
 
 interface PageHeaderProps {
   title: string;
   description?: string;
+  icon?: LucideIcon;
+  actionLabel?: string;
+  actionIcon?: LucideIcon;
+  onAction?: () => void;
   actionButton?: {
     label: string;
-    href?: string;
-    onClick?: () => void;
-    icon?: React.ComponentType<{ className?: string }>;
+    icon?: LucideIcon;
+    onClick: () => void;
   };
+  children?: React.ReactNode;
 }
 
 export function PageHeader({
   title,
   description,
+  icon: TitleIcon,
+  actionLabel,
+  actionIcon: ActionIcon,
+  onAction,
   actionButton,
+  children,
 }: PageHeaderProps) {
-  const Icon = actionButton?.icon || Plus;
+  const finalLabel = actionButton?.label || actionLabel;
+  const FinalIcon = actionButton?.icon || ActionIcon;
+  const finalOnClick = actionButton?.onClick || onAction;
 
   return (
-    <Card>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between text-right">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800 font-sans">
+    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-border pb-5">
+      <div className="flex items-start gap-3.5">
+        {TitleIcon && (
+          <div className="size-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+            <TitleIcon className="size-5.5 stroke-[2.25]" />
+          </div>
+        )}
+        <div>
+          <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
             {title}
           </h1>
           {description && (
-            <p className="text-sm text-slate-500 font-medium">
-              {description}
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground font-medium">{description}</p>
           )}
         </div>
+      </div>
 
-        {actionButton && (
-          <div className="flex items-center gap-3">
-            {actionButton.href ? (
-              <Button asChild variant="brand" size="brandMd" className="w-full sm:w-auto">
-                <Link href={actionButton.href}>
-                  <Icon className="ml-2 h-4 w-4 shrink-0" />
-                  {actionButton.label}
-                </Link>
-              </Button>
-            ) : (
-              <Button
-                onClick={actionButton.onClick}
-                variant="brand"
-                size="brandMd"
-                className="w-full sm:w-auto"
-              >
-                <Icon className="ml-2 h-4 w-4 shrink-0" />
-                {actionButton.label}
-              </Button>
-            )}
-          </div>
+      <div className="flex items-center gap-3">
+        {children}
+        {finalLabel && finalOnClick && (
+          <Button
+            onClick={finalOnClick}
+            variant="brand"
+            size="brandMd"
+            className="flex items-center gap-2 font-bold shadow-none"
+          >
+            {FinalIcon && <FinalIcon className="size-4 shrink-0 stroke-[2.25]" />}
+            <span>{finalLabel}</span>
+          </Button>
         )}
       </div>
-    </Card>
+    </div>
   );
 }

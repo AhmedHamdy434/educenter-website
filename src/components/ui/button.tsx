@@ -21,9 +21,10 @@ const buttonVariants = cva(
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
         // EduCenter Brand Custom Variants
-        brand: "bg-[#1E4632] hover:bg-[#163625] text-white border-transparent cursor-pointer",
-        brandOutline: "border-[#1E4632]/20 text-[#1E4632] hover:bg-[#F0F7F4] hover:border-[#1E4632]/30 bg-white cursor-pointer",
-        brandWhite: "bg-white hover:bg-white/90 text-[#1E4632] border-transparent cursor-pointer shadow-md",
+        brand: "bg-primary hover:bg-primary/90 text-primary-foreground border-transparent cursor-pointer font-semibold shadow-none",
+        brandOutline: "border border-border text-foreground hover:bg-secondary hover:border-border/80 bg-card cursor-pointer font-medium shadow-none",
+        brandWhite: "bg-card hover:bg-secondary text-primary border border-border cursor-pointer shadow-none font-semibold",
+        accent: "bg-accent hover:bg-accent/90 text-accent-foreground border-transparent cursor-pointer font-semibold shadow-none",
       },
       size: {
         default:

@@ -10,7 +10,7 @@ import { type GroupDetails } from "../../types";
 
 interface EnrolledStudentsListProps {
   students: GroupDetails["students"];
-  onRemoveStudent: (studentId: string) => void;
+  onRemoveStudent: (studentId: string) => Promise<void>;
   isRemovePending: boolean;
   showRemoveButton?: boolean;
   onViewPayments?: (studentId: string, studentName: string) => void;
@@ -23,153 +23,154 @@ export function EnrolledStudentsList({
   showRemoveButton = true,
   onViewPayments,
 }: EnrolledStudentsListProps) {
-  const [studentSearch, setStudentSearch] = useState("");
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [selectedStudentForRemove, setSelectedStudentForRemove] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
-  // Client-side search for enrolled students
-  const filteredEnrolledStudents = useMemo(() => {
+  // Filter students by name, phone, or parent phone
+  const filteredStudents = useMemo(() => {
     return students.filter(
-      (item) =>
-        item.student.user.fullName.toLowerCase().includes(studentSearch.toLowerCase()) ||
-        item.student.user.phone.includes(studentSearch) ||
-        (item.student.parentPhone && item.student.parentPhone.includes(studentSearch))
+      (s) =>
+        s.student.user.fullName.toLowerCase().includes(search.toLowerCase()) ||
+        s.student.user.phone.includes(search) ||
+        s.student.parentPhone.includes(search)
     );
-  }, [students, studentSearch]);
-
-  const handleOpenConfirm = (studentId: string) => {
-    setSelectedStudentId(studentId);
-    setIsConfirmOpen(true);
-  };
-
-  const handleCloseConfirm = () => {
-    setSelectedStudentId(null);
-    setIsConfirmOpen(false);
-  };
+  }, [students, search]);
 
   const handleConfirmRemove = async () => {
-    if (selectedStudentId) {
-      await onRemoveStudent(selectedStudentId);
-      handleCloseConfirm();
+    if (selectedStudentForRemove) {
+      await onRemoveStudent(selectedStudentForRemove.id);
+      setSelectedStudentForRemove(null);
     }
   };
 
-  // Find the selected student's name for confirmation message
-  const selectedStudentName = useMemo(() => {
-    if (!selectedStudentId) return "";
-    const item = students.find((s) => s.student.id === selectedStudentId);
-    return item ? item.student.user.fullName : "";
-  }, [students, selectedStudentId]);
-
   return (
-    <>
-      <Card className="p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-4">
-          <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-            <Users className="size-5 text-[#1E4632]" />
-            الطلاب المسجلون ({students.length})
+    <div className="space-y-4">
+      {/* Top Search & Count Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Users className="size-5 text-primary" />
+          <h2 className="font-bold text-foreground text-base">
+            قائمة الطلاب المسجلين ({students.length})
           </h2>
-
-          <div className="w-full sm:w-64">
-            <TableSearch
-              placeholder="ابحث عن طالب..."
-              value={studentSearch}
-              onChange={setStudentSearch}
-            />
-          </div>
         </div>
 
-        {/* Students Table */}
-        {filteredEnrolledStudents.length > 0 ? (
-          <div className="overflow-x-auto border border-slate-100 rounded-xl">
-            <table className="w-full text-right border-collapse text-sm">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
+        <div className="w-full sm:w-72">
+          <TableSearch
+            placeholder="ابحث بالاسم أو رقم الهاتف..."
+            value={search}
+            onChange={setSearch}
+          />
+        </div>
+      </div>
+
+      {/* Students List Container */}
+      <Card className="p-0 border border-border bg-card shadow-none overflow-hidden rounded-xl">
+        {filteredStudents.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-right text-sm">
+              <thead className="bg-secondary/60 border-b border-border text-foreground text-xs font-bold">
+                <tr>
+                  <th className="p-4">#</th>
                   <th className="p-4">اسم الطالب</th>
                   <th className="p-4">رقم الهاتف</th>
                   <th className="p-4">هاتف ولي الأمر</th>
                   <th className="p-4">تاريخ الانضمام</th>
-                  {(showRemoveButton || !!onViewPayments) && <th className="p-4 text-center">الإجراءات</th>}
+                  <th className="p-4 text-center">الإجراءات</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-600">
-                {filteredEnrolledStudents.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="p-4 font-semibold text-slate-800">
-                      <div className="flex flex-col">
-                        <span>{item.student.user.fullName}</span>
-                        <span className="text-xs text-slate-400 font-normal">
-                          {item.student.user.email}
-                        </span>
+              <tbody className="divide-y divide-border/60 text-foreground">
+                {filteredStudents.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className="hover:bg-muted/30 transition-colors"
+                  >
+                    <td className="p-4 font-semibold text-muted-foreground text-xs">
+                      {index + 1}
+                    </td>
+                    <td className="p-4 font-bold text-foreground">
+                      {item.student.user.fullName}
+                    </td>
+                    <td className="p-4 text-muted-foreground text-xs font-mono">
+                      {item.student.user.phone}
+                    </td>
+                    <td className="p-4 text-muted-foreground text-xs font-mono">
+                      {item.student.parentPhone}
+                    </td>
+                    <td className="p-4 text-muted-foreground text-xs">
+                      {new Date(item.joinedAt).toLocaleDateString("ar-EG")}
+                    </td>
+                    <td className="p-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {onViewPayments && (
+                          <Button
+                            type="button"
+                            variant="brandOutline"
+                            size="sm"
+                            onClick={() =>
+                              onViewPayments(
+                                item.student.id,
+                                item.student.user.fullName
+                              )
+                            }
+                            className="h-8 gap-1.5 text-xs rounded-lg"
+                          >
+                            <CreditCard className="size-3.5 text-primary" />
+                            <span>سجل الدفع</span>
+                          </Button>
+                        )}
+
+                        {showRemoveButton && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setSelectedStudentForRemove({
+                                id: item.student.id,
+                                name: item.student.user.fullName,
+                              })
+                            }
+                            className="h-8 gap-1 text-destructive hover:bg-destructive/10 rounded-lg text-xs"
+                          >
+                            <UserMinus className="size-3.5" />
+                            <span>إلغاء التسجيل</span>
+                          </Button>
+                        )}
                       </div>
                     </td>
-                    <td className="p-4">{item.student.user.phone}</td>
-                    <td className="p-4">{item.student.parentPhone || "—"}</td>
-                    <td className="p-4 text-slate-400 text-xs">
-                      {new Date(item.joinedAt).toLocaleDateString("ar-EG", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </td>
-                    {(showRemoveButton || !!onViewPayments) && (
-                      <td className="p-4 text-center">
-                        <div className="flex gap-2 justify-center items-center">
-                          {onViewPayments && (
-                            <Button
-                              onClick={() => onViewPayments(item.student.id, item.student.user.fullName)}
-                              variant="ghost"
-                              size="icon"
-                              title="عرض سجل المدفوعات"
-                              className="h-8 w-8 text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-lg animate-none"
-                            >
-                              <CreditCard className="size-4" />
-                            </Button>
-                          )}
-                          {showRemoveButton && (
-                            <Button
-                              onClick={() => handleOpenConfirm(item.student.id)}
-                              variant="ghost"
-                              size="icon"
-                              title="إلغاء التسجيل"
-                              className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg"
-                              disabled={isRemovePending}
-                            >
-                              <UserMinus className="size-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <div className="text-center py-12 text-slate-400 border border-dashed border-slate-200 rounded-2xl bg-slate-50/10">
-            <Users className="size-12 mx-auto text-slate-300 mb-3" />
-            <p className="font-semibold text-slate-500">لا يوجد طلاب مسجلون</p>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-              {studentSearch
-                ? "لم يتم العثور على أي طلاب يطابقون بحثك الحالي."
-                : "هذه المجموعة فارغة حالياً. اضغط على زر إدراج طلاب لإضافة طلاب من نفس المرحلة."}
+          <div className="text-center py-12 text-muted-foreground">
+            <Users className="size-10 mx-auto text-muted-foreground/30 mb-2" />
+            <p className="font-semibold text-sm">
+              {search
+                ? "لا يوجد طلاب يطابقون معايير البحث."
+                : "لم يتم تسجيل أي طلاب في هذه المجموعة بعد."}
             </p>
           </div>
         )}
       </Card>
 
-      {/* Delete Confirmation Alert Dialog */}
-      <ConfirmDialog
-        isOpen={isConfirmOpen}
-        onClose={handleCloseConfirm}
-        onConfirm={handleConfirmRemove}
-        title="إلغاء تسجيل طالب"
-        description={`هل أنت متأكد من إلغاء تسجيل الطالب "${selectedStudentName}" من هذه المجموعة الدراسية؟`}
-        confirmText="إلغاء التسجيل"
-        cancelText="تراجع"
-        isLoading={isRemovePending}
-      />
-    </>
+      {/* Confirmation Dialog for Removing Student */}
+      {selectedStudentForRemove && (
+        <ConfirmDialog
+          isOpen={!!selectedStudentForRemove}
+          onClose={() => setSelectedStudentForRemove(null)}
+          onConfirm={handleConfirmRemove}
+          title="إلغاء تسجيل الطالب من المجموعة"
+          description={`هل أنت متأكد من إلغاء تسجيل الطالب "${selectedStudentForRemove.name}" من هذه المجموعة الدراسية؟`}
+          confirmLabel="نعم، إلغاء التسجيل"
+          cancelLabel="تراجع"
+          isLoading={isRemovePending}
+        />
+      )}
+    </div>
   );
 }
