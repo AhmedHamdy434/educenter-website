@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Star, ArrowLeft, Play, Sparkles } from "lucide-react";
+import { Star, ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/common/motion-wrapper";
 
@@ -102,24 +102,6 @@ export function Hero() {
               <div className="relative mx-auto max-w-md lg:max-w-none">
                 {/* Visual Glow */}
                 <div className="absolute inset-0 m-auto w-[85%] h-[85%] rounded-full bg-secondary/80 -z-10 animate-pulse duration-8000" />
-                
-                {/* Floating Badge Top */}
-                <div className="absolute top-[8%] right-[8%] p-3.5 rounded-2xl bg-card border border-border shadow-md text-accent z-20">
-                  <Sparkles className="size-6" />
-                </div>
-
-                {/* Floating Card Bottom */}
-                <div className="absolute bottom-[10%] left-[5%] p-3.5 rounded-2xl bg-card border border-border shadow-md text-primary z-20">
-                  <div className="flex items-center gap-2">
-                    <div className="flex -space-x-1 space-x-reverse">
-                      {[...Array(5)].map((_, i) => (
-                        <div key={i} className="size-2 rounded-full bg-primary" />
-                      ))}
-                    </div>
-                    <span className="text-xs font-bold text-foreground">تقارير فورية</span>
-                  </div>
-                </div>
-
                 {/* Main Hero Image Frame */}
                 <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden shadow-lg border border-border bg-card">
                   <Image

@@ -13,7 +13,11 @@ interface EnrolledStudentsListProps {
   onRemoveStudent: (studentId: string) => Promise<void>;
   isRemovePending: boolean;
   showRemoveButton?: boolean;
-  onViewPayments?: (studentId: string, studentName: string) => void;
+  onViewPayments?: (
+    studentId: string,
+    studentName: string,
+    groupStudentId?: string
+  ) => void;
 }
 
 export function EnrolledStudentsList({
@@ -112,7 +116,8 @@ export function EnrolledStudentsList({
                             onClick={() =>
                               onViewPayments(
                                 item.student.id,
-                                item.student.user.fullName
+                                item.student.user.fullName,
+                                item.id
                               )
                             }
                             className="h-8 gap-1.5 text-xs rounded-lg"

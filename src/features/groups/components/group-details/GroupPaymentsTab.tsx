@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SharedModal } from "@/components/common/SharedModal";
+import { FilterDropdown } from "@/components/common/FilterDropdown";
 import { useGroupPaymentsQuery, useGroupQuery } from "../../hooks/queries";
 import { usePayGroupStudentMonthMutation } from "../../hooks/mutations";
 import { type GroupStudentPaymentInfo } from "../../types";
@@ -189,17 +190,16 @@ export function GroupPaymentsTab({ groupId }: GroupPaymentsTabProps) {
           <label className="text-sm font-bold text-foreground shrink-0">
             الشهر المستهدف:
           </label>
-          <select
+          <FilterDropdown
             value={activeMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="h-10 px-3 rounded-xl border border-input bg-card text-foreground text-sm font-semibold focus:outline-none focus:border-primary transition-colors w-full sm:w-48 cursor-pointer"
-          >
-            {availableMonths.map((m) => (
-              <option key={m} value={m}>
-                {formatMonthName(m)}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedMonth}
+            placeholder="اختر الشهر المستهدف..."
+            options={availableMonths.map((m) => ({
+              value: m,
+              label: formatMonthName(m),
+            }))}
+            className="w-full sm:w-56"
+          />
         </div>
 
         <div className="relative w-full sm:w-72">

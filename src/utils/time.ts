@@ -62,6 +62,38 @@ export const formatFullDate = (dateStr: string): string => {
   })}`;
 };
 
+export const calculateDaysRemaining = (endDateStr: string): number => {
+  if (!endDateStr) return 0;
+  const end = new Date(endDateStr).getTime();
+  const now = Date.now();
+  const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+};
+
+export const getSubscriptionStatusDetails = (
+  subscription?: { status?: string; endDate?: string } | null
+) => {
+  if (!subscription || !subscription.endDate) {
+    return {
+      daysRemaining: 0,
+      isExpired: true,
+      isNearExpiry: false,
+    };
+  }
+
+  const end = new Date(subscription.endDate).getTime();
+  const now = Date.now();
+  const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  const expired = subscription.status === "EXPIRED" || diffDays <= 0;
+  const nearExpiry = !expired && diffDays <= 5;
+  return {
+    daysRemaining: Math.max(diffDays, 0),
+    isExpired: expired,
+    isNearExpiry: nearExpiry,
+
+  };
+};
+
 export const formatMonthName = (monthStr: string): string => {
   if (!monthStr) return "";
   const date = new Date(monthStr);

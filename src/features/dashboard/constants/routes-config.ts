@@ -91,12 +91,6 @@ export const dashboardRoutes: RouteItem[] = [
     roles: [UserRole.TEACHER],
   },
   {
-    title: "التحضير والغياب",
-    href: "/dashboard/instructor/attendance",
-    icon: CalendarCheck,
-    roles: [UserRole.TEACHER],
-  },
-  {
     title: "الاختبارات",
     href: "/dashboard/instructor/exams",
     icon: ClipboardCheck,

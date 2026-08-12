@@ -33,6 +33,7 @@ export function GroupDetailsClient({
   const [paymentHistoryStudent, setPaymentHistoryStudent] = useState<{
     id: string;
     name: string;
+    groupStudentId?: string;
   } | null>(null);
 
   const isOwner = userRole === UserRole.OWNER;
@@ -42,12 +43,11 @@ export function GroupDetailsClient({
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const initialTab =
-    !isTeacher &&
-    (tabParam === "attendance" ||
-      tabParam === "reports" ||
-      tabParam === "students" ||
-      tabParam === "payments")
-      ? tabParam
+    tabParam === "attendance" ||
+    tabParam === "reports" ||
+    tabParam === "students" ||
+    tabParam === "payments"
+      ? (tabParam as "students" | "attendance" | "reports" | "payments")
       : "students";
 
   const [activeTab, setActiveTab] = useState<
@@ -113,90 +113,90 @@ export function GroupDetailsClient({
         {/* Right 2 cols: Dynamic Tabs content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Tabs Selector Bar */}
-          {!isTeacher && (
-            <div className="flex border-b border-border gap-6">
-              <button
-                onClick={() => setActiveTab("students")}
-                className={cn(
-                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
-                  activeTab === "students"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Users className="size-4" />
-                <span>الطلاب المسجلون</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("attendance")}
-                className={cn(
-                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
-                  activeTab === "attendance"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <CalendarCheck2 className="size-4" />
-                <span>تحضير الحضور والغياب</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("reports")}
-                className={cn(
-                  "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
-                  activeTab === "reports"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <TrendingUp className="size-4" />
-                <span>تقارير نسب الحضور</span>
-              </button>
-
-              {isOwner && (
-                <button
-                  onClick={() => setActiveTab("payments")}
-                  className={cn(
-                    "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
-                    activeTab === "payments"
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <CreditCard className="size-4" />
-                  <span>الاشتراكات والمدفوعات</span>
-                </button>
+          <div className="flex border-b border-border gap-6">
+            <button
+              onClick={() => setActiveTab("students")}
+              className={cn(
+                "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
+                activeTab === "students"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               )}
-            </div>
-          )}
+            >
+              <Users className="size-4" />
+              <span>الطلاب المسجلون</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("attendance")}
+              className={cn(
+                "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
+                activeTab === "attendance"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <CalendarCheck2 className="size-4" />
+              <span>تحضير الحضور والغياب</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("reports")}
+              className={cn(
+                "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
+                activeTab === "reports"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <TrendingUp className="size-4" />
+              <span>تقارير نسب الحضور</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("payments")}
+              className={cn(
+                "pb-3 text-sm font-bold transition-colors flex items-center gap-2 border-b-2 -mb-px cursor-pointer",
+                activeTab === "payments"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <CreditCard className="size-4" />
+              <span>الاشتراكات والمدفوعات</span>
+            </button>
+          </div>
 
           {/* Active Tab Content */}
           <div className="min-h-100">
-            {(activeTab === "students" || isTeacher) && (
+            {activeTab === "students" && (
               <EnrolledStudentsList
                 students={group.students}
                 onRemoveStudent={handleRemoveStudent}
                 isRemovePending={isRemovePending}
                 showRemoveButton={isOwner}
-                onViewPayments={(studentId, studentName) =>
-                  setPaymentHistoryStudent({ id: studentId, name: studentName })
+                onViewPayments={(studentId, studentName, groupStudentId) =>
+                  setPaymentHistoryStudent({
+                    id: studentId,
+                    name: studentName,
+                    groupStudentId,
+                  })
                 }
               />
             )}
 
-            {!isTeacher && activeTab === "attendance" && (
+            {activeTab === "attendance" && (
               <AttendanceTab
                 groupId={group.id}
                 totalStudents={group.students.length}
               />
             )}
 
-            {!isTeacher && activeTab === "reports" && (
+            {activeTab === "reports" && (
               <AttendanceReportsTab groupId={group.id} />
             )}
 
-            {isOwner && activeTab === "payments" && (
+            {activeTab === "payments" && (
               <GroupPaymentsTab groupId={group.id} />
             )}
           </div>
@@ -221,13 +221,18 @@ export function GroupDetailsClient({
         />
       )}
 
-      {/* Student Payments History Modal */}
+      {/* Student Payments History Modal with Pay Capability */}
       {paymentHistoryStudent && (
         <StudentPaymentsModal
           isOpen={!!paymentHistoryStudent}
           onClose={() => setPaymentHistoryStudent(null)}
           studentId={paymentHistoryStudent.id}
           studentName={paymentHistoryStudent.name}
+          groupId={group.id}
+          groupStudentId={paymentHistoryStudent.groupStudentId}
+          monthlyFee={Number(group.monthlyFee)}
+          startDate={group.startDate}
+          monthsCount={group.monthsCount}
         />
       )}
     </div>
