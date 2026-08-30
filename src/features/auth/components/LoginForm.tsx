@@ -36,7 +36,14 @@ export function LoginForm() {
 
     handleResponseToast(result);
     if (result.success) {
-      router.push("/");
+      if (
+        result.data?.mustChangePassword ||
+        result.data?.user?.mustChangePassword
+      ) {
+        router.push("/change-password");
+      } else {
+        router.push("/");
+      }
     }
   };
 
@@ -74,24 +81,34 @@ export function LoginForm() {
                 type="text"
                 id="identifier"
                 label="البريد الإلكتروني أو رقم الهاتف"
-                placeholder="admin@educenter.com أو 01xxxxxxxxx"
+                placeholder="user@educenter.com أو 01xxxxxxxxx"
                 className="text-left dir-ltr"
                 error={errors.identifier?.message}
                 disabled={isSubmitting}
                 {...register("identifier")}
               />
 
-              {/* Password Input */}
-              <div className="relative">
-                <FormInput
-                  type="password"
-                  id="password"
-                  label="كلمة المرور"
-                  placeholder="••••••••"
-                  error={errors.password?.message}
-                  disabled={isSubmitting}
-                  {...register("password")}
-                />
+              {/* Password Input & Forgot Link */}
+              <div className="space-y-1.5">
+                <div className="relative">
+                  <FormInput
+                    type="password"
+                    id="password"
+                    label="كلمة المرور"
+                    placeholder="••••••••"
+                    error={errors.password?.message}
+                    disabled={isSubmitting}
+                    {...register("password")}
+                  />
+                </div>
+                <div className="flex justify-end pt-1">
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs text-primary/80 hover:text-primary font-semibold transition-colors"
+                  >
+                    نسيت كلمة المرور؟
+                  </Link>
+                </div>
               </div>
             </div>
 

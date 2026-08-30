@@ -103,11 +103,27 @@ Encapsulate feature-specific logic inside `src/features/<feature-name>/`:
 
 ---
 
-## 13. Authentication & Role Protection
+## 13. Authentication, Role Protection & Center Lifecycle
 *   **Token Storage**: Store JWT tokens in secure, HTTP-only `token` cookies.
-*   **Route Redirection**: Checked inside `src/proxy.ts`. Valid roles are `OWNER`, `TEACHER`, and `STUDENT`.
-    - Unauthenticated requests redirect to `/login`.
-    - Accessing `/dashboard` redirects to `/dashboard/center-owner`, `/dashboard/instructor`, or `/dashboard/student` based on the user's role.
+*   **Role Hierarchy & Scopes**:
+    - Valid application roles: `OWNER` (Center Owner), `TEACHER` (Class Instructor), `STUDENT` (Enrolled Pupil), and public guest parent viewers.
+    - Note: System Admins / Center Managers (`ADMIN` / Super Admin) use their own separate standalone dashboard application and are not routed here.
+    - `OWNER` navigates `/dashboard/center-owner` (includes appointing center managers via `/admins`, managing catalog, groups, and center subscription).
+    - `TEACHER` navigates `/dashboard/instructor` (scoped strictly to assigned groups, attendance recording, tuition status of taught students, and magic link generation).
+    - `STUDENT` navigates `/dashboard/student` (strictly isolated read-only personal progress, attendance history, and payment logs).
+*   **Route Redirection (`proxy.ts`)**:
+    - Public allowed routes: `/`, `/login`, `/forgot-password`, `/reset-password`, `/change-password`, and `/p/*` (Parent Magic Link Portal).
+    - Unauthenticated requests to protected `/dashboard/*` redirect to `/login`.
+    - Authenticated users accessing `/dashboard` or `/login` are routed to their role-specific dashboard (`/dashboard/center-owner`, `/dashboard/instructor`, `/dashboard/student`).
+*   **Security & Password Lifecycle**:
+    - Mandatory password change when `mustChangePassword === true` using `PATCH /auth/change-password`.
+    - OTP Forgot Password flow: `POST /auth/forgot-password` (10-min OTP countdown) and `POST /auth/reset-password`.
+*   **Subscription Grace Period & Read-Only Protection**:
+    - Capture `X-Subscription-Warning` response header and display grace period banner to `OWNER` **only** (never to `TEACHER` or `STUDENT`).
+    - When expired, disable mutating buttons (Add, Edit, Delete, Toggle) with an explanatory Arabic tooltip.
+*   **Parent Magic Link Portal (`/p/:token`)**:
+    - Staff (`OWNER`, `TEACHER`) generate 30-day tokens via `POST /p/generate/:studentId`.
+    - Public mobile-responsive view without login requirement.
 
 ---
 

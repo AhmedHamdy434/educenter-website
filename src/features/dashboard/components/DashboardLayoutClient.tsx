@@ -5,6 +5,8 @@ import { Sidebar } from "./Sidebar";
 import { DashboardHeader } from "./DashboardHeader";
 import { User, UserRole } from "@/types";
 
+import { SubscriptionWarningBanner } from "@/features/subscription/components/SubscriptionWarningBanner";
+
 interface DashboardLayoutClientProps {
   user: User;
   role: UserRole;
@@ -48,6 +50,9 @@ export function DashboardLayoutClient({
 
       {/* Main Workspace (Takes remaining width on left) */}
       <div className="flex flex-1 flex-col overflow-hidden bg-background">
+        {/* Grace Period Warning Banner (OWNER ONLY) */}
+        {role === UserRole.OWNER && <SubscriptionWarningBanner />}
+
         {/* Dashboard Header */}
         <DashboardHeader
           user={user}

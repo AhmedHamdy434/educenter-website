@@ -35,11 +35,29 @@ export interface User {
   email: string;
   phone?: string;
   role?: UserRole;
+  centerId?: string;
+  mustChangePassword?: boolean;
 }
 
 export interface LoginResponseData {
   accessToken: string;
   user: User;
+  mustChangePassword?: boolean;
+}
+
+export interface ForgotPasswordDTO {
+  email: string;
+}
+
+export interface ResetPasswordDTO {
+  email: string;
+  otp: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordDTO {
+  currentPassword: string;
+  newPassword: string;
 }
 
 export interface QueryParams {

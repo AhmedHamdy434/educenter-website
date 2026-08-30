@@ -44,10 +44,18 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Helper: check if pathname is a public allowed route
+  const isPublicRoute =
+    pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password" ||
+    pathname === "/change-password" ||
+    pathname.startsWith("/p/");
+
   // 1. If user is NOT logged in
   if (!token) {
-    // Only allow access to "/" (landing page) and "/login" (login page)
-    if (pathname !== "/" && pathname !== "/login") {
+    if (!isPublicRoute) {
       const loginUrl = new URL("/login", request.url);
       return NextResponse.redirect(loginUrl);
     }
@@ -58,17 +66,18 @@ export function proxy(request: NextRequest) {
   const payload = decodeJwt(token);
   const isExpired = !!payload?.exp && payload.exp * 1000 < Date.now();
   const role = payload?.role; // OWNER | TEACHER | STUDENT
+  const isValidRole = role === "OWNER" || role === "TEACHER" || role === "STUDENT";
 
   // If token is invalid, expired, or has no valid role, clear token
-  if (!payload || isExpired || !role || role === "ADMIN") {
+  if (!payload || isExpired || !role || !isValidRole) {
     // If accessing protected routes, redirect to login with token cleared
-    if (pathname !== "/" && pathname !== "/login") {
+    if (!isPublicRoute) {
       const response = NextResponse.redirect(new URL("/login", request.url));
       response.cookies.delete("token");
       return response;
     }
 
-    // If accessing public pages ("/" or "/login"), proceed as guest and strip stale token
+    // If accessing public pages, proceed as guest and strip stale token
     const requestHeaders = new Headers(request.headers);
     const cookieHeader = request.headers.get("cookie") || "";
     const updatedCookieHeader = cookieHeader

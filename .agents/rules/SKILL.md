@@ -30,10 +30,12 @@ Arabic).
   "tailwindcss"`, or any `:root { --color-... }` block before assuming
   where tokens live. Do not create a `tailwind.config.js` file — that is
   the wrong pattern for this Tailwind version and will silently not apply.
-- The app is **RTL Arabic-first**. Any font choice must have solid Arabic
-  glyph support and a Latin fallback for numbers/mixed content.
 - Layout is a fixed right-side sidebar (RTL) + main content area, used by
-  three roles: Owner/Admin, Teacher, Student. This structure does not change.
+  three center roles: Owner, Teacher, and Student, alongside a clean standalone
+  Public Parent Portal (`/p/:token`). Admin/Super Admin has a separate dashboard.
+- Grace period banner and read-only disabled states must adhere to the palette:
+  warm amber/ochre notices for grace period (Owner only), muted stone borders and
+  disabled treatments for read-only buttons with descriptive Arabic tooltips.
 
 ---
 

@@ -9,6 +9,7 @@ import { SharedModal } from "@/components/common/SharedModal";
 import { Card } from "@/components/ui/card";
 import { StudentForm } from "./StudentForm";
 import { StudentPaymentsModal } from "./StudentPaymentsModal";
+import { ParentLinkModal } from "./ParentLinkModal";
 import { useStudentsQuery } from "../hooks/queries";
 import { useToggleStudentMutation } from "../hooks/mutations";
 import { getStudentColumns } from "./columns";
@@ -24,6 +25,7 @@ interface StudentsListClientProps {
 
 export function StudentsListClient({ initialData, gradesOptions }: StudentsListClientProps) {
   const [paymentHistoryStudent, setPaymentHistoryStudent] = useState<Student | null>(null);
+  const [magicLinkStudent, setMagicLinkStudent] = useState<Student | null>(null);
 
   // Pagination, search, and filter state
   const {
@@ -72,6 +74,7 @@ export function StudentsListClient({ initialData, gradesOptions }: StudentsListC
         onEdit: openEdit,
         onViewPayments: setPaymentHistoryStudent,
         onToggleStatus: toggleStatus,
+        onGenerateParentLink: (student) => setMagicLinkStudent(student),
         togglingId,
       }),
     [openEdit, toggleStatus, togglingId],
@@ -160,6 +163,13 @@ export function StudentsListClient({ initialData, gradesOptions }: StudentsListC
           studentName={paymentHistoryStudent.user.fullName}
         />
       )}
+
+      {/* 5. Parent Magic Link Modal */}
+      <ParentLinkModal
+        isOpen={!!magicLinkStudent}
+        onClose={() => setMagicLinkStudent(null)}
+        student={magicLinkStudent}
+      />
     </div>
   );
 }

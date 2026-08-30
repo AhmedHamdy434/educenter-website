@@ -1,11 +1,13 @@
 import { type Student } from "../types";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Link2 } from "lucide-react";
 
 interface ColumnsProps {
   onEdit: (student: Student) => void;
   onViewPayments: (student: Student) => void;
   onToggleStatus: (id: string) => void;
+  onGenerateParentLink?: (student: Student) => void;
   togglingId: string | null;
 }
 
@@ -13,6 +15,7 @@ export function getStudentColumns({
   onEdit,
   onViewPayments,
   onToggleStatus,
+  onGenerateParentLink,
   togglingId,
 }: ColumnsProps) {
   return [
@@ -88,12 +91,12 @@ export function getStudentColumns({
       id: "actions",
       header: "الإجراءات",
       cell: ({ row }: { row: { original: Student } }) => (
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-1.5 justify-center items-center">
           <Button
             onClick={() => onEdit(row.original)}
             variant="brandOutline"
             size="sm"
-            className="h-8 rounded-lg font-semibold"
+            className="h-8 rounded-lg font-semibold text-xs px-2.5"
           >
             تعديل
           </Button>
@@ -101,10 +104,22 @@ export function getStudentColumns({
             onClick={() => onViewPayments(row.original)}
             variant="outline"
             size="sm"
-            className="h-8 rounded-lg border-border text-foreground hover:bg-muted font-medium text-xs"
+            className="h-8 rounded-lg border-border text-foreground hover:bg-muted font-medium text-xs px-2.5"
           >
             المدفوعات
           </Button>
+          {onGenerateParentLink && (
+            <Button
+              onClick={() => onGenerateParentLink(row.original)}
+              variant="outline"
+              size="sm"
+              className="h-8 rounded-lg border-border text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 font-semibold text-xs px-2.5 gap-1"
+              title="توليد رابط ولي الأمر"
+            >
+              <Link2 className="size-3.5" />
+              <span>ولي الأمر</span>
+            </Button>
+          )}
         </div>
       ),
     },

@@ -1,6 +1,9 @@
 import {
   LayoutDashboard,
   Users,
+  UserCheck,
+  History,
+  MessageSquare,
   GraduationCap,
   Layers,
   BookOpen,
@@ -35,6 +38,18 @@ export const dashboardRoutes: RouteItem[] = [
     roles: [UserRole.OWNER],
   },
   {
+    title: "المواد الدراسية",
+    href: "/dashboard/center-owner/subjects",
+    icon: BookOpen,
+    roles: [UserRole.OWNER],
+  },
+  {
+    title: "المجموعات",
+    href: "/dashboard/center-owner/groups",
+    icon: Layers,
+    roles: [UserRole.OWNER],
+  },
+  {
     title: "الطلاب",
     href: "/dashboard/center-owner/students",
     icon: Users,
@@ -47,15 +62,21 @@ export const dashboardRoutes: RouteItem[] = [
     roles: [UserRole.OWNER],
   },
   {
-    title: "المجموعات",
-    href: "/dashboard/center-owner/groups",
-    icon: Layers,
+    title: "المستخدمين",
+    href: "/dashboard/center-owner/users",
+    icon: UserCheck,
     roles: [UserRole.OWNER],
   },
   {
-    title: "المواد الدراسية",
-    href: "/dashboard/center-owner/subjects",
-    icon: BookOpen,
+    title: "سجل العمليات",
+    href: "/dashboard/center-owner/audit-logs",
+    icon: History,
+    roles: [UserRole.OWNER],
+  },
+  {
+    title: "رسائل الواتساب",
+    href: "/dashboard/center-owner/notifications",
+    icon: MessageSquare,
     roles: [UserRole.OWNER],
   },
   {
@@ -65,7 +86,7 @@ export const dashboardRoutes: RouteItem[] = [
     roles: [UserRole.OWNER],
   },
   {
-    title: "الاشتراك",
+    title: "الاشتراك والفوترة",
     href: "/dashboard/center-owner/subscription",
     icon: CreditCard,
     roles: [UserRole.OWNER],

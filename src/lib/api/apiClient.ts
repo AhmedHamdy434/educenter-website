@@ -56,6 +56,19 @@ export const serverApiClient = async <T>({
       cache,
     });
 
+    // Capture subscription grace period warning header if present
+    const warningHeader = res.headers.get("x-subscription-warning");
+    if (warningHeader && typeof window !== "undefined") {
+      try {
+        const { useSubscriptionStore } = await import(
+          "@/features/subscription/state/useSubscriptionStore"
+        );
+        useSubscriptionStore.getState().setWarning(warningHeader);
+      } catch {
+        // Ignore store import error in non-browser context
+      }
+    }
+
     let data: Record<string, unknown> = {};
     try {
       data = await res.json();

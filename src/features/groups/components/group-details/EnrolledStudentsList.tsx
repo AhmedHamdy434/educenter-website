@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Users, UserMinus, CreditCard } from "lucide-react";
+import { Users, UserMinus, CreditCard, Link2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TableSearch } from "@/components/common/TableSearch";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { ParentLinkModal } from "@/features/students/components/ParentLinkModal";
 import { type GroupDetails } from "../../types";
+import { type Student } from "@/features/students/types";
 
 interface EnrolledStudentsListProps {
   students: GroupDetails["students"];
@@ -28,6 +30,7 @@ export function EnrolledStudentsList({
   onViewPayments,
 }: EnrolledStudentsListProps) {
   const [search, setSearch] = useState("");
+  const [magicLinkStudent, setMagicLinkStudent] = useState<Student | null>(null);
   const [selectedStudentForRemove, setSelectedStudentForRemove] = useState<{
     id: string;
     name: string;
@@ -107,7 +110,19 @@ export function EnrolledStudentsList({
                       {new Date(item.joinedAt).toLocaleDateString("ar-EG")}
                     </td>
                     <td className="p-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setMagicLinkStudent(item.student as unknown as Student)}
+                          className="h-8 gap-1 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 rounded-lg text-xs"
+                          title="توليد رابط تقرير ولي الأمر"
+                        >
+                          <Link2 className="size-3.5" />
+                          <span>ولي الأمر</span>
+                        </Button>
+
                         {onViewPayments && (
                           <Button
                             type="button"
@@ -141,7 +156,7 @@ export function EnrolledStudentsList({
                             className="h-8 gap-1 text-destructive hover:bg-destructive/10 rounded-lg text-xs"
                           >
                             <UserMinus className="size-3.5" />
-                            <span>إلغاء التسجيل</span>
+                            <span>إلغاء</span>
                           </Button>
                         )}
                       </div>
@@ -162,6 +177,13 @@ export function EnrolledStudentsList({
           </div>
         )}
       </Card>
+
+      {/* Parent Magic Link Modal */}
+      <ParentLinkModal
+        isOpen={!!magicLinkStudent}
+        onClose={() => setMagicLinkStudent(null)}
+        student={magicLinkStudent}
+      />
 
       {/* Confirmation Dialog for Removing Student */}
       {selectedStudentForRemove && (
