@@ -1,4 +1,4 @@
-import type { AdminUser } from "../types";
+import { type AdminUser } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Mail, Phone, Calendar } from "lucide-react";
 
