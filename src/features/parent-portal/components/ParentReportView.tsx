@@ -22,14 +22,18 @@ interface ParentReportViewProps {
 }
 
 export function ParentReportView({ data }: ParentReportViewProps) {
-  const { student, attendance, groups, tuition } = data;
+  const { student,recentAttendance: attendance, groups, tuition } = data;
+  console.log(data,"fdadad");
 
   const attendanceRate = attendance?.attendanceRate ?? 0;
   const isExcellent = attendanceRate >= 85;
   const isWarning = attendanceRate < 70;
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-8 px-4 sm:px-6 lg:px-8 font-sans" dir="rtl">
+    <div
+      className="min-h-screen bg-background text-foreground py-8 px-4 sm:px-6 lg:px-8 font-sans"
+      dir="rtl"
+    >
       <div className="max-w-4xl mx-auto space-y-8">
         {/* 1. Brand & Header Card */}
         <header className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs">
@@ -43,7 +47,10 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                   <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
                     {student.fullName}
                   </h1>
-                  <Badge variant="outline" className="bg-secondary text-primary border-border font-bold text-xs">
+                  <Badge
+                    variant="outline"
+                    className="bg-secondary text-primary border-border font-bold text-xs"
+                  >
                     {student.gradeName}
                   </Badge>
                 </div>
@@ -61,7 +68,10 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                 <span>تقرير رسمي موثق</span>
               </div>
               {student.centerPhone && (
-                <span className="text-[11px] text-muted-foreground font-mono flex items-center gap-1" dir="ltr">
+                <span
+                  className="text-[11px] text-muted-foreground font-mono flex items-center gap-1"
+                  dir="ltr"
+                >
                   <Phone className="size-3" />
                   {student.centerPhone}
                 </span>
@@ -82,7 +92,10 @@ export function ParentReportView({ data }: ParentReportViewProps) {
         <section aria-labelledby="attendance-heading" className="space-y-4">
           <div className="flex items-center gap-2">
             <CalendarCheck className="size-5 text-primary" />
-            <h2 id="attendance-heading" className="text-lg font-bold text-foreground">
+            <h2
+              id="attendance-heading"
+              className="text-lg font-bold text-foreground"
+            >
               مؤشرات الحضور والغياب
             </h2>
           </div>
@@ -94,8 +107,8 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                 isWarning
                   ? "bg-rose-50/60 border-rose-200"
                   : isExcellent
-                  ? "bg-emerald-50/60 border-emerald-200"
-                  : "bg-amber-50/60 border-amber-200"
+                    ? "bg-emerald-50/60 border-emerald-200"
+                    : "bg-amber-50/60 border-amber-200"
               }`}
             >
               <div className="flex items-center justify-between">
@@ -108,8 +121,8 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                     isWarning
                       ? "bg-rose-100 text-rose-900 border-rose-300"
                       : isExcellent
-                      ? "bg-emerald-100 text-emerald-900 border-emerald-300"
-                      : "bg-amber-100 text-amber-900 border-amber-300"
+                        ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                        : "bg-amber-100 text-amber-900 border-amber-300"
                   }`}
                 >
                   {isExcellent ? "ممتاز" : isWarning ? "يحتاج لمتابعة" : "جيد"}
@@ -132,10 +145,12 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                     isWarning
                       ? "bg-rose-600"
                       : isExcellent
-                      ? "bg-emerald-700"
-                      : "bg-amber-600"
+                        ? "bg-emerald-700"
+                        : "bg-amber-600"
                   }`}
-                  style={{ width: `${Math.min(100, Math.max(0, attendanceRate))}%` }}
+                  style={{
+                    width: `${Math.min(100, Math.max(0, attendanceRate))}%`,
+                  }}
                 />
               </div>
             </Card>
@@ -169,63 +184,69 @@ export function ParentReportView({ data }: ParentReportViewProps) {
           </div>
 
           {/* Recent Absences List if any */}
-          {attendance.recentAbsences && attendance.recentAbsences.length > 0 && (
-            <Card className="p-5 rounded-xl border border-border bg-card space-y-3 shadow-none">
-              <h3 className="text-xs font-bold text-foreground">
-                سجل أيام الغياب والتأخير الأخيرة:
-              </h3>
-              <div className="divide-y divide-border/60">
-                {attendance.recentAbsences.map((rec, i) => (
-                  <div
-                    key={i}
-                    className="py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className={
-                          rec.status === "ABSENT"
-                            ? "bg-rose-50 text-rose-800 border-rose-200"
+          {attendance.recentAbsences &&
+            attendance.recentAbsences.length > 0 && (
+              <Card className="p-5 rounded-xl border border-border bg-card space-y-3 shadow-none">
+                <h3 className="text-xs font-bold text-foreground">
+                  سجل أيام الغياب والتأخير الأخيرة:
+                </h3>
+                <div className="divide-y divide-border/60">
+                  {attendance.recentAbsences.map((rec, i) => (
+                    <div
+                      key={i}
+                      className="py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant="outline"
+                          className={
+                            rec.status === "ABSENT"
+                              ? "bg-rose-50 text-rose-800 border-rose-200"
+                              : rec.status === "LATE"
+                                ? "bg-amber-50 text-amber-800 border-amber-200"
+                                : "bg-stone-100 text-stone-700 border-stone-200"
+                          }
+                        >
+                          {rec.status === "ABSENT"
+                            ? "غائب"
                             : rec.status === "LATE"
-                            ? "bg-amber-50 text-amber-800 border-amber-200"
-                            : "bg-stone-100 text-stone-700 border-stone-200"
-                        }
-                      >
-                        {rec.status === "ABSENT"
-                          ? "غائب"
-                          : rec.status === "LATE"
-                          ? "متأخر"
-                          : "مستأذن"}
-                      </Badge>
-                      <span className="font-semibold text-foreground font-mono">
-                        {new Date(rec.date).toLocaleDateString("ar-EG", {
-                          weekday: "short",
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                      {rec.groupName && (
-                        <span className="text-muted-foreground">({rec.groupName})</span>
+                              ? "متأخر"
+                              : "مستأذن"}
+                        </Badge>
+                        <span className="font-semibold text-foreground font-mono">
+                          {new Date(rec.date).toLocaleDateString("ar-EG", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </span>
+                        {rec.groupName && (
+                          <span className="text-muted-foreground">
+                            ({rec.groupName})
+                          </span>
+                        )}
+                      </div>
+                      {rec.reason && (
+                        <span className="text-muted-foreground text-xs bg-muted/40 px-2.5 py-1 rounded">
+                          السبب: {rec.reason}
+                        </span>
                       )}
                     </div>
-                    {rec.reason && (
-                      <span className="text-muted-foreground text-xs bg-muted/40 px-2.5 py-1 rounded">
-                        السبب: {rec.reason}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </Card>
-          )}
+                  ))}
+                </div>
+              </Card>
+            )}
         </section>
 
         {/* 3. Enrolled Groups & Subjects */}
         <section aria-labelledby="groups-heading" className="space-y-4">
           <div className="flex items-center gap-2">
             <BookOpen className="size-5 text-primary" />
-            <h2 id="groups-heading" className="text-lg font-bold text-foreground">
+            <h2
+              id="groups-heading"
+              className="text-lg font-bold text-foreground"
+            >
               المجموعات والمواد المسجل بها
             </h2>
           </div>
@@ -246,7 +267,10 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                         {group.subjectName}
                       </span>
                     </div>
-                    <Badge variant="outline" className="bg-secondary text-primary border-border text-[11px] font-bold">
+                    <Badge
+                      variant="outline"
+                      className="bg-secondary text-primary border-border text-[11px] font-bold"
+                    >
                       نشط
                     </Badge>
                   </div>
@@ -263,8 +287,10 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                         {typeof group.schedules === "string"
                           ? group.schedules
                           : Array.isArray(group.schedules)
-                          ? group.schedules.map((s) => `${s.day} ${s.time}`).join(" • ")
-                          : "—"}
+                            ? group.schedules
+                                .map((s) => `${s.day} ${s.time}`)
+                                .join(" • ")
+                            : "—"}
                       </span>
                     </div>
                   )}
@@ -282,7 +308,10 @@ export function ParentReportView({ data }: ParentReportViewProps) {
         <section aria-labelledby="tuition-heading" className="space-y-4">
           <div className="flex items-center gap-2">
             <CreditCard className="size-5 text-primary" />
-            <h2 id="tuition-heading" className="text-lg font-bold text-foreground">
+            <h2
+              id="tuition-heading"
+              className="text-lg font-bold text-foreground"
+            >
               سجل الاشتراكات والمدفوعات الشهرية
             </h2>
           </div>
@@ -302,12 +331,16 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                   </thead>
                   <tbody className="divide-y divide-border/60 font-medium">
                     {tuition.map((t, idx) => (
-                      <tr key={idx} className="hover:bg-muted/20 transition-colors">
+                      <tr
+                        key={idx}
+                        className="hover:bg-muted/20 transition-colors"
+                      >
                         <td className="p-3.5 font-bold text-foreground">
                           {t.month}
                         </td>
                         <td className="p-3.5 text-muted-foreground">
-                          {t.groupName} {t.subjectName ? `(${t.subjectName})` : ""}
+                          {t.groupName}{" "}
+                          {t.subjectName ? `(${t.subjectName})` : ""}
                         </td>
                         <td className="p-3.5 font-mono font-bold text-foreground">
                           {t.amount} ج.م
@@ -327,7 +360,9 @@ export function ParentReportView({ data }: ParentReportViewProps) {
                         <td className="p-3.5 text-muted-foreground font-mono text-[11px]">
                           {t.paidAt
                             ? `${new Date(t.paidAt).toLocaleDateString("ar-EG")}${
-                                t.receiptNumber ? ` (إيصال #${t.receiptNumber})` : ""
+                                t.receiptNumber
+                                  ? ` (إيصال #${t.receiptNumber})`
+                                  : ""
                               }`
                             : "—"}
                         </td>
@@ -346,7 +381,10 @@ export function ParentReportView({ data }: ParentReportViewProps) {
 
         {/* Footer */}
         <footer className="text-center pt-6 border-t border-border text-xs text-muted-foreground space-y-1">
-          <p>© {new Date().getFullYear()} {student.centerName} — مدعوم بمنصة EduCenter التعليمية</p>
+          <p>
+            © {new Date().getFullYear()} {student.centerName} — مدعوم بمنصة
+            EduCenter التعليمية
+          </p>
           <p className="text-[11px] text-muted-foreground/70">
             هذا الرابط مخصص لولي الأمر فقط، نرجو عدم مشاركته مع غير المعنيين.
           </p>

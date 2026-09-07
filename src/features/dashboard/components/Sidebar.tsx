@@ -28,7 +28,7 @@ export function Sidebar({ role, user, onClose }: SidebarProps) {
 
   // Filter routes based on user role
   const filteredRoutes = dashboardRoutes.filter((route) =>
-    route.roles.includes(role)
+    route.roles.includes(role),
   );
 
   const handleLogout = async () => {
@@ -61,16 +61,22 @@ export function Sidebar({ role, user, onClose }: SidebarProps) {
       </div>
 
       {/* Navigation List Area */}
-      <nav className="flex-1 overflow-y-auto px-3.5 py-5" aria-label="القائمة الجانبية">
+      <nav
+        className="flex-1 overflow-y-auto px-3.5 py-5"
+        aria-label="القائمة الجانبية"
+      >
         {/* Micro-Label: Main Navigation */}
         <span className="text-[11px] font-bold tracking-widest text-sidebar-foreground/50 uppercase block px-3 py-1 mb-1.5 select-none">
           التنقل الرئيسي
         </span>
 
         <ul className="space-y-1.5">
-          {filteredRoutes.map((item) => {
+          {filteredRoutes.map((item, index) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+            const isActive =
+              index === 0
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
             return (
               <li key={item.href}>
                 <Link
@@ -81,7 +87,7 @@ export function Sidebar({ role, user, onClose }: SidebarProps) {
                     "flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-[14px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
                     isActive
                       ? "bg-white/15 text-white font-bold border-r-4 border-amber-500 pr-3 shadow-xs"
-                      : "text-sidebar-foreground/80 hover:bg-white/8 hover:text-white"
+                      : "text-sidebar-foreground/80 hover:bg-white/8 hover:text-white",
                   )}
                 >
                   <div
@@ -89,10 +95,15 @@ export function Sidebar({ role, user, onClose }: SidebarProps) {
                       "flex size-6 items-center justify-center rounded-md transition-colors",
                       isActive
                         ? "bg-amber-500/20 text-amber-400"
-                        : "text-sidebar-foreground/70"
+                        : "text-sidebar-foreground/70",
                     )}
                   >
-                    <Icon className={cn("size-4 shrink-0", isActive && "stroke-[2.5]")} />
+                    <Icon
+                      className={cn(
+                        "size-4 shrink-0",
+                        isActive && "stroke-[2.5]",
+                      )}
+                    />
                   </div>
                   <span>{item.title}</span>
                 </Link>
@@ -129,7 +140,10 @@ export function Sidebar({ role, user, onClose }: SidebarProps) {
               {user.name ? user.name.charAt(0).toUpperCase() : "م"}
             </div>
             <div className="flex flex-col overflow-hidden text-right">
-              <span className="text-sm font-bold text-white truncate" title={user.name}>
+              <span
+                className="text-sm font-bold text-white truncate"
+                title={user.name}
+              >
                 {user.name || "مستخدم"}
               </span>
               <span className="text-xs text-sidebar-foreground/65 truncate font-medium">
@@ -137,7 +151,7 @@ export function Sidebar({ role, user, onClose }: SidebarProps) {
               </span>
             </div>
           </div>
-          
+
           {/* Logout Button */}
           <button
             onClick={handleLogout}

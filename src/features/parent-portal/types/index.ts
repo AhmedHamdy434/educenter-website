@@ -43,7 +43,7 @@ export interface ParentReportData {
     centerPhone?: string;
     parentPhone?: string;
   };
-  attendance: ParentAttendanceSummary;
+  recentAttendance: ParentAttendanceSummary;
   groups: ParentEnrolledGroup[];
   tuition: ParentTuitionRecord[];
   expiresAt?: string;
